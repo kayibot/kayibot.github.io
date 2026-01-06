@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,347 +20,290 @@
         }
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
         body {
             font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
         }
 
         .gradient-bg {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            background: radial-gradient(ellipse at top, #1e293b 0%, #0f172a 50%, #000000 100%);
         }
 
-        .card-gradient {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        .glow-text {
+            text-shadow: 0 0 40px rgba(102, 126, 234, 0.5);
         }
 
-        .glow-effect {
-            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        .glass {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .animate-float {
-            animation: float 3s ease-in-out infinite;
+        .glow-box {
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.2);
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+            }
         }
 
-        .glass-effect {
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(102, 126, 234, 0.6);
+            }
+        }
+
+        .animate-pulse-glow {
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        .grid-pattern {
+            background-image:
+                linear-gradient(rgba(102, 126, 234, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(102, 126, 234, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
         }
     </style>
 </head>
+
 <body class="gradient-bg text-gray-100 antialiased">
-    
-    <!-- Hero Section -->
-    <div class="min-h-screen flex items-center justify-center px-4 py-20">
-        <div class="max-w-6xl mx-auto text-center">
-            <div class="animate-float mb-8">
-                <div class="inline-block p-4 rounded-full bg-gradient-to-r from-primary to-secondary glow-effect">
-                    <svg class="w-20 h-20 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                    </svg>
-                </div>
-            </div>
-            
-            <h1 class="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-primary via-purple-400 to-secondary bg-clip-text text-transparent">
-                KayiBot v0.1
-            </h1>
-            
-            <p class="text-xl md:text-2xl text-gray-400 mb-12 max-w-2xl mx-auto">
-                Gelişmiş Bot Scripti ile Oyun Deneyiminizi Yükseltin
-            </p>
-            
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a href="https://www.tampermonkey.net/" target="_blank" 
-                   class="group px-8 py-4 bg-gradient-to-r from-primary to-secondary rounded-full text-white font-semibold text-lg transition-all duration-300 hover:scale-105 glow-effect flex items-center gap-2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
-                    </svg>
-                    Tampermonkey İndir
-                </a>
-                
-                <a href="#download" 
-                   class="px-8 py-4 glass-effect rounded-full text-white font-semibold text-lg transition-all duration-300 hover:scale-105 border border-primary/50 flex items-center gap-2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                    </svg>
-                    Script'i İndir
-                </a>
-            </div>
-        </div>
-    </div>
 
-    <!-- Announcements Section -->
-    <div class="max-w-7xl mx-auto px-4 py-20">
-        <div class="text-center mb-12">
-            <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-accent to-green-400 bg-clip-text text-transparent">
-                📢 Duyurular
-            </h2>
-        </div>
-        
-        <div class="grid md:grid-cols-2 gap-6">
-            <div class="glass-effect rounded-2xl p-6 border-l-4 border-accent hover:scale-105 transition-transform duration-300">
-                <div class="text-sm text-gray-400 mb-2">06 Ocak 2025</div>
-                <h3 class="text-xl font-bold mb-2 text-accent">v0.1 İlk Sürüm Yayınlandı!</h3>
-                <p class="text-gray-300">KayiBot'un ilk stabil sürümü yayınlandı. Lisanslama sistemi ve temel bot özellikleri aktif.</p>
-            </div>
-            
-            <div class="glass-effect rounded-2xl p-6 border-l-4 border-primary hover:scale-105 transition-transform duration-300">
-                <div class="text-sm text-gray-400 mb-2">06 Ocak 2025</div>
-                <h3 class="text-xl font-bold mb-2 text-primary">Güvenlik Güncellemesi</h3>
-                <p class="text-gray-300">Fingerprint tabanlı güvenlik sistemi eklendi. Her lisans sadece bir cihazda kullanılabilir.</p>
-            </div>
-        </div>
-    </div>
+    <!-- Main Container - Single Page Layout -->
+    <div class="min-h-screen flex items-center justify-center px-4 py-8 grid-pattern">
+        <div class="max-w-7xl w-full">
 
-    <!-- Features Section -->
-    <div class="max-w-7xl mx-auto px-4 py-20">
-        <div class="text-center mb-12">
-            <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                ✨ Özellikler
-            </h2>
-        </div>
-        
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="glass-effect rounded-2xl p-8 hover:scale-105 transition-all duration-300 group">
-                <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🔐</div>
-                <h3 class="text-xl font-bold mb-3 text-white">Güvenli Lisanslama</h3>
-                <p class="text-gray-400">Fingerprint tabanlı güvenlik sistemi ile lisansınız korunur</p>
-            </div>
-            
-            <div class="glass-effect rounded-2xl p-8 hover:scale-105 transition-all duration-300 group">
-                <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🤖</div>
-                <h3 class="text-xl font-bold mb-3 text-white">Çoklu Bot Desteği</h3>
-                <p class="text-gray-400">Aynı anda birden fazla bot çalıştırabilirsiniz</p>
-            </div>
-            
-            <div class="glass-effect rounded-2xl p-8 hover:scale-105 transition-all duration-300 group">
-                <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">⚡</div>
-                <h3 class="text-xl font-bold mb-3 text-white">Otomatik Spectate</h3>
-                <p class="text-gray-400">Botlar otomatik olarak oyuncuları izler ve takip eder</p>
-            </div>
-            
-            <div class="glass-effect rounded-2xl p-8 hover:scale-105 transition-all duration-300 group">
-                <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🎮</div>
-                <h3 class="text-xl font-bold mb-3 text-white">Kolay Kontrol</h3>
-                <p class="text-gray-400">Kullanıcı dostu arayüz ile tüm ayarları kolayca yapın</p>
-            </div>
-            
-            <div class="glass-effect rounded-2xl p-8 hover:scale-105 transition-all duration-300 group">
-                <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">📊</div>
-                <h3 class="text-xl font-bold mb-3 text-white">Gerçek Zamanlı İstatistikler</h3>
-                <p class="text-gray-400">Aktif bot sayısı ve oyuncu bilgilerini anlık görün</p>
-            </div>
-            
-            <div class="glass-effect rounded-2xl p-8 hover:scale-105 transition-all duration-300 group">
-                <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🔄</div>
-                <h3 class="text-xl font-bold mb-3 text-white">Otomatik Güncelleme</h3>
-                <p class="text-gray-400">Script güncellemeleri otomatik olarak kontrol edilir</p>
-            </div>
-        </div>
-    </div>
+            <!-- Hero + Content Grid -->
+            <div class="grid lg:grid-cols-2 gap-8 items-start">
 
-    <!-- Installation Guide -->
-    <div id="download" class="max-w-5xl mx-auto px-4 py-20">
-        <div class="text-center mb-12">
-            <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-accent to-green-400 bg-clip-text text-transparent">
-                🛠️ Kurulum Rehberi
-            </h2>
-        </div>
-        
-        <div class="space-y-6">
-            <div class="glass-effect rounded-2xl p-6 flex gap-6 hover:border-primary/50 transition-all duration-300">
-                <div class="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-xl font-bold">1</div>
-                <div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Tampermonkey Yükleyin</h3>
-                    <p class="text-gray-400">Tarayıcınıza uygun Tampermonkey uzantısını yükleyin (Chrome, Firefox, Edge, Safari desteklenir)</p>
-                </div>
-            </div>
-            
-            <div class="glass-effect rounded-2xl p-6 flex gap-6 hover:border-primary/50 transition-all duration-300">
-                <div class="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-xl font-bold">2</div>
-                <div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Script'i İndirin</h3>
-                    <p class="text-gray-400">Yukarıdaki "Script'i İndir" butonuna tıklayın veya manuel olarak <code class="px-2 py-1 bg-slate-800 rounded">.user.js</code> dosyasını açın</p>
-                </div>
-            </div>
-            
-            <div class="glass-effect rounded-2xl p-6 flex gap-6 hover:border-primary/50 transition-all duration-300">
-                <div class="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-xl font-bold">3</div>
-                <div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Script'i Yükleyin</h3>
-                    <p class="text-gray-400">Tampermonkey otomatik olarak script'i algılayacak ve yükleme ekranını gösterecektir. "Install" butonuna tıklayın</p>
-                </div>
-            </div>
-            
-            <div class="glass-effect rounded-2xl p-6 flex gap-6 hover:border-primary/50 transition-all duration-300">
-                <div class="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-xl font-bold">4</div>
-                <div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Lisans Anahtarınızı Girin</h3>
-                    <p class="text-gray-400">Sayfayı açın, sol tarafta çıkan login ekranına lisans anahtarınızı girin</p>
-                </div>
-            </div>
-            
-            <div class="glass-effect rounded-2xl p-6 flex gap-6 hover:border-accent/50 transition-all duration-300 border-l-4 border-accent">
-                <div class="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-r from-accent to-green-400 flex items-center justify-center text-xl font-bold">5</div>
-                <div>
-                    <h3 class="text-xl font-bold mb-2 text-accent">Kullanmaya Başlayın!</h3>
-                    <p class="text-gray-400">Giriş yaptıktan sonra bot kontrol paneli otomatik olarak açılacaktır</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="mt-8 glass-effect rounded-2xl p-6 border-l-4 border-yellow-500">
-            <div class="flex gap-4">
-                <div class="text-3xl">⚠️</div>
-                <div>
-                    <h3 class="text-lg font-bold mb-2 text-yellow-400">Önemli Uyarı</h3>
-                    <p class="text-gray-300">Bu script sadece lisanslı kullanıcılar için geçerlidir. Lisans almak için iletişime geçin.</p>
-                </div>
-            </div>
-        </div>
-    </div>
+                <!-- Left Column - Hero -->
+                <div class="space-y-8">
+                    <div class="text-center lg:text-left">
+                        <div class="inline-block mb-6 animate-float">
+                            <div class="p-6 rounded-3xl bg-gradient-to-br from-primary to-secondary animate-pulse-glow">
+                                <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                    </path>
+                                </svg>
+                            </div>
+                        </div>
 
-    <!-- Usage Guide -->
-    <div class="max-w-5xl mx-auto px-4 py-20">
-        <div class="text-center mb-12">
-            <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                📖 Kullanım Kılavuzu
-            </h2>
-        </div>
-        
-        <div class="grid md:grid-cols-2 gap-8">
-            <div class="glass-effect rounded-2xl p-8">
-                <h3 class="text-2xl font-bold mb-6 text-accent">Temel Komutlar</h3>
-                <div class="space-y-4">
-                    <div>
-                        <div class="font-semibold text-white mb-1">+ Bot</div>
-                        <p class="text-gray-400 text-sm">Oyuna yeni bot ekler</p>
-                        <div class="mt-2 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-sm text-red-300">
-                            ⚠️ Oyuna giriş yaptıktan sonra + Bot tıklayın!
+                        <h1
+                            class="text-5xl md:text-7xl font-black mb-4 bg-gradient-to-r from-primary via-purple-400 to-accent bg-clip-text text-transparent glow-text leading-tight">
+                            KayiBot
+                        </h1>
+
+                        <div class="inline-block px-4 py-2 glass rounded-full mb-6">
+                            <span class="text-sm font-semibold text-accent">v0.1 • Stabil Sürüm</span>
+                        </div>
+
+                        <p class="text-xl text-gray-300 mb-8 max-w-lg mx-auto lg:mx-0">
+                            Gelişmiş bot scripti ile oyun deneyiminizi yükseltin
+                        </p>
+
+                        <!-- CTA Buttons -->
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
+                            <a href="https://www.tampermonkey.net/" target="_blank"
+                                class="px-8 py-4 bg-gradient-to-r from-primary to-secondary rounded-2xl text-white font-bold text-lg hover:scale-105 transition-all duration-300 glow-box flex items-center justify-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                </svg>
+                                Hemen Başla
+                            </a>
+
+                            <a href="https://instagram.com/kayibotx" target="_blank"
+                                class="px-8 py-4 glass rounded-2xl text-white font-semibold text-lg hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                                </svg>
+                                İletişim
+                            </a>
+                        </div>
+
+                        <!-- Stats -->
+                        <div class="grid grid-cols-3 gap-4 max-w-md mx-auto lg:mx-0">
+                            <div class="glass rounded-xl p-4 text-center">
+                                <div class="text-2xl font-bold text-accent">100+</div>
+                                <div class="text-xs text-gray-400">Kullanıcı</div>
+                            </div>
+                            <div class="glass rounded-xl p-4 text-center">
+                                <div class="text-2xl font-bold text-primary">99%</div>
+                                <div class="text-xs text-gray-400">Uptime</div>
+                            </div>
+                            <div class="glass rounded-xl p-4 text-center">
+                                <div class="text-2xl font-bold text-purple-400">24/7</div>
+                                <div class="text-xs text-gray-400">Destek</div>
+                            </div>
                         </div>
                     </div>
-                    <div>
-                        <div class="font-semibold text-white mb-1">Stop All</div>
-                        <p class="text-gray-400 text-sm">Tüm botları durdurur</p>
+                </div>
+
+                <!-- Right Column - Features & Info -->
+                <div class="space-y-6">
+
+                    <!-- Features Grid -->
+                    <div class="glass rounded-3xl p-6">
+                        <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                            <span class="text-2xl">✨</span>
+                            Özellikler
+                        </h2>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="bg-white/5 rounded-xl p-4 hover:bg-white/10 transition-all">
+                                <div class="text-2xl mb-2">🔐</div>
+                                <div class="text-sm font-semibold">Güvenli Lisans</div>
+                            </div>
+                            <div class="bg-white/5 rounded-xl p-4 hover:bg-white/10 transition-all">
+                                <div class="text-2xl mb-2">🤖</div>
+                                <div class="text-sm font-semibold">Çoklu Bot</div>
+                            </div>
+                            <div class="bg-white/5 rounded-xl p-4 hover:bg-white/10 transition-all">
+                                <div class="text-2xl mb-2">⚡</div>
+                                <div class="text-sm font-semibold">Otomatik İzleme</div>
+                            </div>
+                            <div class="bg-white/5 rounded-xl p-4 hover:bg-white/10 transition-all">
+                                <div class="text-2xl mb-2">📊</div>
+                                <div class="text-sm font-semibold">Canlı İstatistik</div>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <div class="font-semibold text-white mb-1">R Tuşu</div>
-                        <p class="text-gray-400 text-sm">Tüm botlar farklı oyuncuları izlemeye başlar</p>
+
+                    <!-- Quick Start -->
+                    <div class="glass rounded-3xl p-6">
+                        <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                            <span class="text-2xl">🚀</span>
+                            Hızlı Başlangıç
+                        </h2>
+                        <div class="space-y-3">
+                            <div class="flex gap-3">
+                                <div
+                                    class="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-sm font-bold">
+                                    1</div>
+                                <div class="text-sm text-gray-300">Tampermonkey uzantısını yükle</div>
+                            </div>
+                            <div class="flex gap-3">
+                                <div
+                                    class="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-sm font-bold">
+                                    2</div>
+                                <div class="text-sm text-gray-300">Script'i indir ve yükle</div>
+                            </div>
+                            <div class="flex gap-3">
+                                <div
+                                    class="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-sm font-bold">
+                                    3</div>
+                                <div class="text-sm text-gray-300">Lisans anahtarını gir</div>
+                            </div>
+                            <div class="flex gap-3">
+                                <div
+                                    class="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-accent to-green-400 flex items-center justify-center text-sm font-bold">
+                                    ✓</div>
+                                <div class="text-sm font-semibold text-accent">Kullanmaya başla!</div>
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- Announcements -->
+                    <div class="glass rounded-3xl p-6">
+                        <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                            <span class="text-2xl">📢</span>
+                            Son Güncellemeler
+                        </h2>
+                        <div class="space-y-3">
+                            <div class="bg-accent/10 border-l-4 border-accent rounded-lg p-3">
+                                <div class="text-xs text-gray-400 mb-1">06 Ocak 2025</div>
+                                <div class="text-sm font-semibold text-accent">v0.1 Yayınlandı!</div>
+                                <div class="text-xs text-gray-300 mt-1">İlk stabil sürüm aktif</div>
+                            </div>
+                            <div class="bg-primary/10 border-l-4 border-primary rounded-lg p-3">
+                                <div class="text-xs text-gray-400 mb-1">06 Ocak 2025</div>
+                                <div class="text-sm font-semibold text-primary">Güvenlik Güncellemesi</div>
+                                <div class="text-xs text-gray-300 mt-1">Fingerprint sistemi eklendi</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Compact -->
+                    <div class="glass rounded-3xl p-6">
+                        <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                            <span class="text-2xl">❓</span>
+                            SSS
+                        </h2>
+                        <div class="space-y-3 text-sm">
+                            <details class="group">
+                                <summary
+                                    class="cursor-pointer font-semibold text-white flex justify-between items-center">
+                                    Lisans nasıl alınır?
+                                    <svg class="w-4 h-4 transition-transform group-open:rotate-180" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </summary>
+                                <p class="mt-2 text-gray-400 text-xs">Instagram üzerinden iletişime geçin</p>
+                            </details>
+                            <details class="group">
+                                <summary
+                                    class="cursor-pointer font-semibold text-white flex justify-between items-center">
+                                    Kaç cihazda kullanılır?
+                                    <svg class="w-4 h-4 transition-transform group-open:rotate-180" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </summary>
+                                <p class="mt-2 text-gray-400 text-xs">Her lisans sadece 1 cihazda kullanılabilir</p>
+                            </details>
+                            <details class="group">
+                                <summary
+                                    class="cursor-pointer font-semibold text-white flex justify-between items-center">
+                                    Güvenli mi?
+                                    <svg class="w-4 h-4 transition-transform group-open:rotate-180" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </summary>
+                                <p class="mt-2 text-gray-400 text-xs">Fingerprint tabanlı güvenlik sistemi ile korunur
+                                </p>
+                            </details>
+                        </div>
+                    </div>
+
                 </div>
             </div>
-            
-            <div class="glass-effect rounded-2xl p-8">
-                <h3 class="text-2xl font-bold mb-6 text-primary">Ayarlar</h3>
-                <div class="space-y-4">
-                    <div>
-                        <div class="font-semibold text-white mb-1">👀 Spectate Speed</div>
-                        <p class="text-gray-400 text-sm">Oyuncu izleme süresi (ms)</p>
-                    </div>
-                    <div>
-                        <div class="font-semibold text-white mb-1">👻 Clear Frozen</div>
-                        <p class="text-gray-400 text-sm">Bot takılırsa kaç ms sonra silineceğini belirler</p>
-                    </div>
-                    <div>
-                        <div class="font-semibold text-white mb-1">✨ Smoothness</div>
-                        <p class="text-gray-400 text-sm">Hareket yumuşaklığı (0=Anlık, 120=Akıcı)</p>
-                    </div>
+
+            <!-- Footer -->
+            <div class="mt-8 text-center">
+                <div class="glass rounded-2xl p-4 inline-block">
+                    <p class="text-sm text-gray-400">&copy; 2025 KayiBot • Kullanımdan doğacak sorumluluk kullanıcıya
+                        aittir</p>
                 </div>
             </div>
-        </div>
-        
-        <div class="mt-8 glass-effect rounded-2xl p-6 border-l-4 border-blue-500">
-            <div class="flex gap-4">
-                <div class="text-3xl">💡</div>
-                <div>
-                    <h3 class="text-lg font-bold mb-2 text-blue-400">İpucu</h3>
-                    <p class="text-gray-300">3 bot ideal sayıdır. Fazlasında IP blok riski vardır. Proxy veya WARP kullanmanız önerilir.</p>
-                </div>
-            </div>
+
         </div>
     </div>
-
-    <!-- FAQ Section -->
-    <div class="max-w-5xl mx-auto px-4 py-20">
-        <div class="text-center mb-12">
-            <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-accent to-green-400 bg-clip-text text-transparent">
-                ❓ Sık Sorulan Sorular
-            </h2>
-        </div>
-        
-        <div class="space-y-4">
-            <details class="glass-effect rounded-2xl p-6 group cursor-pointer">
-                <summary class="font-bold text-lg text-white list-none flex justify-between items-center">
-                    Lisans nasıl alınır?
-                    <svg class="w-5 h-5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </summary>
-                <p class="mt-4 text-gray-400">Lisans almak için Discord/Telegram üzerinden iletişime geçebilirsiniz.</p>
-            </details>
-            
-            <details class="glass-effect rounded-2xl p-6 group cursor-pointer">
-                <summary class="font-bold text-lg text-white list-none flex justify-between items-center">
-                    Bir lisans kaç cihazda kullanılabilir?
-                    <svg class="w-5 h-5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </summary>
-                <p class="mt-4 text-gray-400">Her lisans sadece bir cihazda kullanılabilir. Cihaz değiştirmek için oturum resetleme yapmanız gerekir.</p>
-            </details>
-            
-            <details class="glass-effect rounded-2xl p-6 group cursor-pointer">
-                <summary class="font-bold text-lg text-white list-none flex justify-between items-center">
-                    Script çalışmıyor, ne yapmalıyım?
-                    <svg class="w-5 h-5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </summary>
-                <p class="mt-4 text-gray-400">Önce Tampermonkey'in aktif olduğundan ve script'in etkin olduğundan emin olun. Sorun devam ederse tarayıcı console'unu (F12) açıp hata mesajlarını kontrol edin.</p>
-            </details>
-            
-            <details class="glass-effect rounded-2xl p-6 group cursor-pointer">
-                <summary class="font-bold text-lg text-white list-none flex justify-between items-center">
-                    Lisansım başka cihazda aktif diyor, ne yapmalıyım?
-                    <svg class="w-5 h-5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </summary>
-                <p class="mt-4 text-gray-400">Eski cihazınıza erişiminiz varsa oturum resetleme yapabilirsiniz. Yoksa destek ekibiyle iletişime geçin.</p>
-            </details>
-        </div>
-    </div>
-
-    <!-- Contact Section -->
-    <div class="max-w-5xl mx-auto px-4 py-20">
-        <div class="glass-effect rounded-2xl p-12 text-center">
-            <h2 class="text-4xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                📞 İletişim
-            </h2>
-            <p class="text-gray-400 mb-8">Sorularınız, önerileriniz veya lisans talepleriniz için:</p>
-            
-            <div class="flex justify-center gap-6">
-                <a href="https://instagram.com/kayibotx" target="_blank" class="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full hover:scale-105 transition-transform">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                    </svg>
-                    <span class="font-semibold">kayibotx</span>
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="max-w-7xl mx-auto px-4 py-12 text-center border-t border-gray-800">
-        <p class="text-gray-400 mb-2">&copy; 2025 KayiBot. Tüm hakları saklıdır.</p>
-        <p class="text-gray-500 text-sm">Kullanımdan doğacak sorumluluk kullanıcıya aittir.</p>
-    </footer>
 
 </body>
+
 </html>
