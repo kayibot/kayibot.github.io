@@ -5,6 +5,7 @@
 // @description  AgarLive|KayiBotX
 // @author       KayiBotX
 // @match        https://agar.live/*
+// @match        https://*.agar.live/*
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @grant        GM_xmlhttpRequest
