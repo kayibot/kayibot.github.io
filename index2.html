@@ -154,7 +154,7 @@
                             <button onclick="window.open('https://agar.live/fancytextnick.html', '_blank')"><i
                                     class="fas fa-magic"></i> Fancy</button>
                         </div>
-                        <select class="mlacpa-server-select" id="gamemode" onchange="setserver($(this).val())">
+                        <select class="mlacpa-server-select" id="gamemode" onchange="setServer($(this).val())">
                             <option value="ffa1.agar.live" data-itr="FFA1">FFA 1 - Classic</option>
                             <option value="ffa2.agar.live" data-itr="FFA2" selected="true">FFA 2 - Fast</option>
                             <option value="ffa3.agar.live" data-itr="FFA3">FFA 3 - Crazy</option>
@@ -163,7 +163,7 @@
                             <option value="ffa4.agar.live" data-itr="FFA72">Crazy Bomb 3</option>
                         </select>
                         <input type="hidden" id="txtSkin" class="playerSkinInput" autocomplete="off" maxlength="15">
-                        <button class="mlacpa-play-button" onclick="playGame(); return false;">
+                        <button class="mlacpa-play-button" onclick="setServer(); return false;">
                             <i class="fas fa-play"></i> PLAY
                         </button>
                         <button class="mlacpa-spectate-button" onclick="spectate(); return false;">
