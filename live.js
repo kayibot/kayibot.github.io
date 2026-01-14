@@ -375,7 +375,6 @@
     }
 
     function onWsClose() {
-        console.log keke
                 log.info("onWSClose ");
         //setTimeout(showConnecting, delay);
         //delay *= 1.5;
