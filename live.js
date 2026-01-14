@@ -307,7 +307,6 @@
     function showConnecting() {
         if (ma) {
             wjQuery("#connecting").show();
-            //keke1
             wsConnect((!useHttps ? "wss://" : "ws://") + CONNECTION_URL)
         }
     }
