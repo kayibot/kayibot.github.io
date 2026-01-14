@@ -516,7 +516,7 @@
         wjQuery("#connecting").hide();
         msg = prepareData(5);
         msg.setUint8(0, 254);
-        msg.setUint32(1, 5, 1); // Protcol 5
+        msg.setUint32(1, 4, true); // Protcol 5
         wsSend(msg);
         msg = prepareData(5);
         msg.setUint8(0, 255);
