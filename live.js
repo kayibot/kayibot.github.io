@@ -369,15 +369,17 @@
         msg.setUint32(1, 0, true);
         wsSend(msg);
         sendNickName();
-        STATS = JSON.parse(httpGet((useHttps ? "https://" : "http://") + location.host + '/api/stats.txt'));
-        document.getElementById("title").innerHTML = STATS.title;
-        document.title = STATS.title
+        //STATS = JSON.parse(httpGet((useHttps ? "https://" : "http://") + location.host + '/api/stats.txt'));
+        //document.getElementById("title").innerHTML = STATS.title;
+        //document.title = STATS.title
         log.info("Connection successful!")
     }
 
     function onWsClose() {
-        setTimeout(showConnecting, delay);
-        delay *= 1.5;
+        console.log keke
+                log.info("onWSClose ");
+        //setTimeout(showConnecting, delay);
+        //delay *= 1.5;
     }
 
     function onWsMessage(msg) {
@@ -1660,7 +1662,7 @@
         favCanvas.width = 32;
         favCanvas.height = 32;
         var ctx = favCanvas.getContext("2d");
-        renderFavicon();
+        //renderFavicon();
 
         // Causes stuttering..
         //setInterval(renderFavicon, 1E3);
