@@ -1,86 +1,240 @@
-(function (wHandle, wjQuery) {
-    ONLY_CLIENT = false;
-    var CONNECTION_URL = ""
-    SKIN_URL = "https://agar.live/skins/", // Skin Directory
-        STATS = ""
-
-    wHandle.setserver = function (arg) {
-        // if (arg != CONNECTION_URL) {
-        //     CONNECTION_URL = arg;
-        //     //showConnecting();
-        // }
-        CONNECTION_URL = arg;
-        console.log('setserver ' + CONNECTION_URL);
+(function(wHandle, wjQuery) {
+    /*global navigator, Image, $*/
+    var CONNECTION_URL = "127.0.0.1:443"; // Default Connection IP
+    var SKIN_URL = "https://agar.live/skins/"; // Skins Directory
+    wHandle.setServer = function(arg) {
+        if (arg != gameMode) {
+            CONNECTION_URL = arg;
+            gameMode = arg;
+            showConnecting();
+        }
     };
-
-
-    wHandle.playGame = function (arg) {
-        showConnecting();
-    };
-
-    var touchX, touchY,
-        touchable = 'createTouch' in document,
-        touches = [];
-
-    var leftTouchID = -1,
-        leftTouchPos = new Vector2(0, 0),
-        leftTouchStartPos = new Vector2(0, 0),
-        leftVector = new Vector2(0, 0);
-
-    var useHttps = "https:" == wHandle.location.protocol;
-
+    var touchable = 'createTouch' in document,
+        touches = [],
+        leftTouchID = -1,
+        leftTouchPos = {x: 0, y: 0},
+        leftTouchStartPos = {x: 0, y: 0},
+        leftVector = {x: 0, y: 0},
+        useHttps = "https:" == wHandle.location.protocol;
     function gameLoop() {
-        ma = true;
+        connecting = 1;
         document.getElementById("canvas").focus();
-        var isTyping = false;
-        var chattxt;
+        var isTyping = 0,
+            chattxt;
         mainCanvas = nCanvas = document.getElementById("canvas");
         ctx = mainCanvas.getContext("2d");
-
-        mainCanvas.onmousemove = function (event) {
+        mainCanvas.onmousemove = function(event) {
             rawMouseX = event.clientX;
             rawMouseY = event.clientY;
-            mouseCoordinateChange()
+            mouseCoordChange();
         };
-
         if (touchable) {
-            mainCanvas.addEventListener('touchstart', onTouchStart, false);
-            mainCanvas.addEventListener('touchmove', onTouchMove, false);
-            mainCanvas.addEventListener('touchend', onTouchEnd, false);
+            mainCanvas.addEventListener('touchstart', onTouchStart, 0);
+            mainCanvas.addEventListener('touchmove', onTouchMove, 0);
+            mainCanvas.addEventListener('touchend', onTouchEnd, 0);
         }
-
-        mainCanvas.onmouseup = function () { };
+        mainCanvas.onmouseup = function() {};
         if (/firefox/i.test(navigator.userAgent)) {
-            document.addEventListener("DOMMouseScroll", handleWheel, false);
+            document.addEventListener("DOMMouseScroll", handleWheel, 0);
         } else {
             document.body.onmousewheel = handleWheel;
         }
-
-        mainCanvas.onfocus = function () {
-            isTyping = false;
+        mainCanvas.onfocus = function() {
+            isTyping = 0;
         };
-
-        document.getElementById("chat_textbox").onblur = function () {
-            isTyping = false;
+        document.getElementById("chat_textbox").onblur = function() {
+            isTyping = 0;
         };
-
-
-        document.getElementById("chat_textbox").onfocus = function () {
-            isTyping = true;
+        document.getElementById("chat_textbox").onfocus = function() {
+            isTyping = 1;
         };
-
-        var spacePressed = false,
-            qPressed = false,
-            ePressed = false,
-            rPressed = false,
-            tPressed = false,
-            pPressed = false,
-            wPressed = false;
-        wHandle.onkeydown = function (event) {
+        var spacePressed = 0,
+            qPressed = 0,
+            ePressed = 0,
+            rPressed = 0,
+            tPressed = 0,
+            wPressed = 0,
+            pPressed = 0,
+            oPressed = 0,
+            mPressed = 0,
+            yPressed = 0,
+            uPressed = 0,
+            kPressed = 0,
+            iPressed = 0,
+            lPressed = 0,
+            hPressed = 0,
+            zPressed = 0,
+            xPressed = 0,
+            sPressed = 0,
+            cPressed = 0,
+            gPressed = 0,
+            jPressed = 0,
+            bPressed = 0,
+            vPressed = 0,
+            nPressed = 0;
+        wHandle.onkeydown = function(event) {
+            if (hasOverlay) return;
             switch (event.keyCode) {
-                case 13: // enter
+                case 32: // SPACE key
+                    if (!spacePressed && !isTyping && !hasOverlay) {
+                        sendMouseMove();
+                        sendUint8(17);
+                        spacePressed = 1;
+                    }
+                    break;
+                case 81: // Q key
+                    if (!qPressed && !isTyping && !hasOverlay) {
+                        sendUint8(18);
+                        qPressed = 1;
+                    }
+                    break;
+                case 87: // W key
+                    if (!wPressed && !isTyping && !hasOverlay) {
+                        sendMouseMove();
+                        sendUint8(21);
+                    }
+                    break;
+                case 69: // E key
+                    if (!ePressed && !isTyping && !hasOverlay) {
+                        sendMouseMove();
+                        sendUint8(22);
+                    }
+                    break;
+                case 82: // R key
+                    if (!rPressed && !isTyping && !hasOverlay) {
+                        sendMouseMove();
+                        sendUint8(23);
+                    }
+                    break;
+                case 84: // T key
+                    if (!tPressed && !isTyping && !hasOverlay) {
+                        sendMouseMove();
+                        sendUint8(24);
+                        tPressed = 1;
+                    }
+                    break;
+                case 80: // P key
+                    if (!pPressed && !isTyping && !hasOverlay) {
+                        sendMouseMove();
+                        sendUint8(25);
+                        pPressed = 1;
+                    }
+                    break;
+                case 79: // O key
+                    if (!oPressed && !isTyping && !hasOverlay) {
+                        sendMouseMove();
+                        sendUint8(26);
+                        oPressed = 1;
+                    }
+                    break;
+                case 77: // M key
+                    if (!mPressed && !isTyping && !hasOverlay) {
+                        sendMouseMove();
+                        sendUint8(27);
+                        mPressed = 1;
+                    }
+                    break;
+                case 73: // I key
+                    if (!iPressed && !isTyping && !hasOverlay) {
+                        sendMouseMove();
+                        sendUint8(28);
+                        iPressed = 1;
+                    }
+                    break;
+                case 89: // Y key
+                    if (!yPressed && !isTyping && !hasOverlay) {
+                        sendMouseMove();
+                        sendUint8(30);
+                    }
+                    break;
+                case 85: // U key
+                    if (!uPressed && !isTyping && !hasOverlay) {
+                        sendMouseMove();
+                        sendUint8(31);
+                    }
+                    break;
+                case 75: // K key
+                    if (!kPressed && !isTyping && !hasOverlay) {
+                        sendMouseMove();
+                        sendUint8(29);
+                        kPressed = 1;
+                    }
+                    break;
+                case 76: // L key
+                    if (!lPressed && !isTyping && !hasOverlay) {
+                        sendMouseMove();
+                        sendUint8(33);
+                        lPressed = 1;
+                    }
+                    break;
+                case 72: // H key
+                    if (!hPressed && !isTyping && !hasOverlay) {
+                        sendMouseMove();
+                        sendUint8(34);
+                        hPressed = 1;
+                    }
+                    break;
+                case 90: // Z key
+                    if (!zPressed && !isTyping && !hasOverlay) {
+                        sendMouseMove();
+                        sendUint8(35);
+                    }
+                    break;
+                case 88: // X key
+                    if (!xPressed && !isTyping && !hasOverlay) {
+                        sendMouseMove();
+                        sendUint8(36);
+                        xPressed = 1;
+                    }
+                    break;
+                case 83: // S key
+                    if (!sPressed && !isTyping && !hasOverlay) {
+                        sendMouseMove();
+                        sendUint8(37);
+                    }
+                    break;
+                case 67: // C key
+                    if (!cPressed && !isTyping && !hasOverlay) {
+                        sendMouseMove();
+                        sendUint8(38);
+                        cPressed = 1;
+                    }
+                    break;
+                case 71: // J key
+                    if (!jPressed && !isTyping && !hasOverlay) {
+                        sendMouseMove();
+                        sendUint8(39);
+                    }
+                    break;
+                case 74: // G key
+                    if (!gPressed && !isTyping && !hasOverlay) {
+                        sendMouseMove();
+                        sendUint8(40);
+                    }
+                    break;
+                case 66: // B key
+                    if (!bPressed && !isTyping && !hasOverlay) {
+                        sendMouseMove();
+                        sendUint8(41);
+                        bPressed = 1;
+                    }
+                    break;
+                case 86: // V key
+                    if (!vPressed && !isTyping && !hasOverlay) {
+                        sendMouseMove();
+                        sendUint8(42);
+                        vPressed = 1;
+                    }
+                    break;
+                case 78: // N key
+                    if (!nPressed && !isTyping && !hasOverlay) {
+                        sendMouseMove();
+                        sendUint8(43);
+                    }
+                    break;
+                case 13: // ENTER key
                     if (isTyping || hideChat) {
-                        isTyping = false;
+                        isTyping = 0;
                         document.getElementById("chat_textbox").blur();
                         chattxt = document.getElementById("chat_textbox").value;
                         if (chattxt.length > 0) sendChat(chattxt);
@@ -88,108 +242,130 @@
                     } else {
                         if (!hasOverlay) {
                             document.getElementById("chat_textbox").focus();
-                            isTyping = true;
+                            isTyping = 1;
                         }
                     }
                     break;
-                case 32: // space
-                    if ((!spacePressed) && (!isTyping)) {
-                        sendMouseMove();
-                        sendUint8(17);
-                        spacePressed = true;
-                    }
-                    break;
-                case 87: // W
-                    if ((!wPressed) && (!isTyping)) {
-                        sendMouseMove();
-                        sendUint8(21);
-                        wPressed = true;
-                    }
-                    break;
-                case 81: // Q
-                    if ((!qPressed) && (!isTyping)) {
-                        sendUint8(18);
-                        qPressed = true;
-                    }
-                    break;
-                case 69: // E
-                    if (!ePressed && (!isTyping)) {
-                        sendMouseMove();
-                        sendUint8(22);
-                    }
-                    break;
-                case 82: // R
-                    if (!rPressed && (!isTyping)) {
-                        sendMouseMove();
-                        sendUint8(23);
-                        if (!rMacro) rPressed = true;
-                    }
-                    break;
-                case 84: // T
-                    if (!tPressed && (!isTyping)) {
-                        sendMouseMove();
-                        sendUint8(24);
-                        tPressed = true;
-                    }
-                    break;
-                case 80: // P
-                    if (!pPressed && (!isTyping)) {
-                        sendMouseMove();
-                        sendUint8(25);
-                        pPressed = true;
-                    }
-                    break;
-                case 27: // esc
-                    showOverlays(true);
+                case 27: // ESC key
+                    showOverlays(1);
+                    wHandle.isSpectating = 0;
                     break;
             }
         };
-        wHandle.onkeyup = function (event) {
+        wHandle.onkeyup = function(event) {
             switch (event.keyCode) {
-                case 32: // space
-                    spacePressed = false;
+                case 32:
+                    spacePressed = 0;
                     break;
-                case 87: // W
-                    wPressed = false;
-                    break;
-                case 81: // Q
-                    if (qPressed) {
-                        sendUint8(19);
-                        qPressed = false;
-                    }
+                case 87:
+                    wPressed = 0;
                     break;
                 case 69:
-                    ePressed = false;
+                    ePressed = 0;
                     break;
                 case 82:
-                    rPressed = false;
+                    rPressed = 0;
                     break;
                 case 84:
-                    tPressed = false;
+                    tPressed = 0;
                     break;
                 case 80:
-                    pPressed = false;
+                    pPressed = 0;
+                    break;
+                case 79:
+                    oPressed = 0;
+                    break;
+                case 77:
+                    mPressed = 0;
+                    break;
+                case 73:
+                    iPressed = 0;
+                    break;
+                case 89:
+                    yPressed = 0;
+                    break;
+                case 85:
+                    uPressed = 0;
+                    break;
+                case 75:
+                    kPressed = 0;
+                    break;
+                case 76:
+                    lPressed = 0;
+                    break;
+                case 72:
+                    hPressed = 0;
+                    break;
+                case 90:
+                    zPressed = 0;
+                    break;
+                case 88:
+                    xPressed = 0;
+                    break;
+                case 83:
+                    sPressed = 0;
+                    break;
+                case 67:
+                    cPressed = 0;
+                    break;
+                case 74:
+                    gPressed = 0;
+                    break;
+                case 71:
+                    jPressed = 0;
+                    break;
+                case 66:
+                    bPressed = 0;
+                    break;
+                case 86:
+                    vPressed = 0;
+                    break;
+                case 78:
+                    nPressed = 0;
+                    break;
+                case 81:
+                    if (qPressed) {
+                        sendUint8(19);
+                        qPressed = 0;
+                    }
                     break;
             }
         };
-        wHandle.onblur = function () {
+        wHandle.onblur = function() {
             sendUint8(19);
-            wPressed = spacePressed = qPressed = ePressed = rPressed = tPressed = pPressed = false
+            spacePressed = 0;
+            qPressed = 0;
+            ePressed = 0;
+            rPressed = 0;
+            tPressed = 0;
+            wPressed = 0;
+            pPressed = 0;
+            oPressed = 0;
+            mPressed = 0;
+            yPressed = 0;
+            uPressed = 0;
+            kPressed = 0;
+            iPressed = 0;
+            lPressed = 0;
+            hPressed = 0;
+            zPressed = 0;
+            xPressed = 0;
+            sPressed = 0;
+            cPressed = 0;
+            gPressed = 0;
+            jPressed = 0;
+            bPressed = 0;
+            vPressed = 0;
+            nPressed = 0;
         };
-
         wHandle.onresize = canvasResize;
         canvasResize();
-        if (wHandle.requestAnimationFrame) {
-            wHandle.requestAnimationFrame(redrawGameScene);
-        } else {
-            setInterval(drawGameScene, 1E3 / 60);
-        }
+        if (wHandle.reqAnimFrame) wHandle.reqAnimFrame(redrawGameScene);
+        else setInterval(drawScene, 1E3 / 60);
         setInterval(sendMouseMove, 40);
-
         null == ws && showConnecting();
         wjQuery("#overlays").show();
     }
-
     function onTouchStart(e) {
         for (var i = 0; i < e.changedTouches.length; i++) {
             var touch = e.changedTouches[i];
@@ -199,21 +375,18 @@
                 leftTouchPos.copyFrom(leftTouchStartPos);
                 leftVector.reset(0, 0);
             }
-
             var size = ~~(canvasWidth / 7);
             if ((touch.clientX > canvasWidth - size) && (touch.clientY > canvasHeight - size)) {
                 sendMouseMove();
-                sendUint8(17); // split
+                sendUint8(17); //split
             }
-
             if ((touch.clientX > canvasWidth - size) && (touch.clientY > canvasHeight - 2 * size - 10) && (touch.clientY < canvasHeight - size - 10)) {
                 sendMouseMove();
-                sendUint8(21); // eject
+                sendUint8(21); //eject
             }
         }
         touches = e.touches;
     }
-
     function onTouchMove(e) {
         e.preventDefault();
         for (var i = 0; i < e.changedTouches.length; i++) {
@@ -224,13 +397,12 @@
                 leftVector.minusEq(leftTouchStartPos);
                 rawMouseX = leftVector.x * 3 + canvasWidth / 2;
                 rawMouseY = leftVector.y * 3 + canvasHeight / 2;
-                mouseCoordinateChange();
+                mouseCoordChange();
                 sendMouseMove();
             }
         }
         touches = e.touches;
     }
-
     function onTouchEnd(e) {
         touches = e.touches;
         for (var i = 0; i < e.changedTouches.length; i++) {
@@ -242,13 +414,11 @@
             }
         }
     }
-
     function handleWheel(event) {
         zoom *= Math.pow(.9, event.wheelDelta / -120 || event.detail || 0);
-        1 > zoom && (zoom = 1);
-        zoom > 4 / viewZoom && (zoom = 4 / viewZoom)
+        !infiniteZoom && (1 > zoom && (zoom = 1));
+        zoom > 4 / viewZoom && (zoom = 4 / viewZoom);
     }
-
     function buildQTree() {
         if (.4 > viewZoom) qTree = null;
         else {
@@ -287,42 +457,36 @@
             }
         }
     }
-
-    function mouseCoordinateChange() {
+    function mouseCoordChange() {
         X = (rawMouseX - canvasWidth / 2) / viewZoom + nodeX;
-        Y = (rawMouseY - canvasHeight / 2) / viewZoom + nodeY
+        Y = (rawMouseY - canvasHeight / 2) / viewZoom + nodeY;
     }
-
     function hideOverlays() {
-        hasOverlay = false;
+        hasOverlay = 0;
+        wjQuery("#adsBottom").hide();
         wjQuery("#overlays").hide();
     }
-
     function showOverlays(arg) {
-        hasOverlay = true;
+        hasOverlay = 1;
         userNickName = null;
         wjQuery("#overlays").fadeIn(arg ? 200 : 3E3);
     }
-
     function showConnecting() {
-        if (ma) {
-            wjQuery("#connecting").show();
-            wsConnect((!useHttps ? "wss://" : "ws://") + CONNECTION_URL)
-        }
+        if (!connecting) return;
+        wjQuery("#connecting").show();
+        wsConnect((useHttps ? "wss://" : "ws://") + CONNECTION_URL);
     }
-
     function wsConnect(wsUrl) {
         if (ws) {
             ws.onopen = null;
             ws.onmessage = null;
             ws.onclose = null;
             try {
-                ws.close()
-            } catch (b) { }
-            ws = null
+                ws.close();
+            } catch (b) {}
+            ws = null;
         }
-        var c = CONNECTION_URL;
-        wsUrl = (useHttps ? "wss://" : "ws://") + c;
+        wsUrl = (useHttps ? "wss://" : "ws://") + CONNECTION_URL;
         nodesOnScreen = [];
         playerCells = [];
         nodes = {};
@@ -331,84 +495,67 @@
         leaderBoard = [];
         mainCanvas = teamScores = null;
         userScore = 0;
-        log.info("Connecting to " + wsUrl + "..");
+        wsUrl = "wss://ffa3.agar.live";
+        console.log("Connecting to " + wsUrl);
         ws = new WebSocket(wsUrl);
         ws.binaryType = "arraybuffer";
         ws.onopen = onWsOpen;
-        ws.onmessage = onWsMessage;
+        ws.onmessage = onWsMSG;
         ws.onclose = onWsClose;
     }
-
     function prepareData(a) {
-        return new DataView(new ArrayBuffer(a))
+        return new DataView(new ArrayBuffer(a));
     }
-
     function wsSend(a) {
-        ws.send(a.buffer)
+        ws.send(a.buffer);
     }
-
-    function httpGet(theUrl) {
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("GET", theUrl, false); // false for synchronous request
-        xmlHttp.send(null);
-        return xmlHttp.responseText;
-    }
-
-
     function onWsOpen() {
         var msg;
+        console.log("Socket open");
         delay = 500;
         wjQuery("#connecting").hide();
         msg = prepareData(5);
         msg.setUint8(0, 254);
-        msg.setUint32(1, 5, true); // Protocol 5
+        msg.setUint32(1, 5, 1); // Protcol 5
         wsSend(msg);
         msg = prepareData(5);
         msg.setUint8(0, 255);
-        msg.setUint32(1, 0, true);
+        msg.setUint32(1, 1332175218, 1);
         wsSend(msg);
         sendNickName();
-        //STATS = JSON.parse(httpGet((useHttps ? "https://" : "http://") + location.host + '/api/stats.txt'));
-        //document.getElementById("title").innerHTML = STATS.title;
-        //document.title = STATS.title
-        log.info("Connection successful!")
     }
-
     function onWsClose() {
-                log.info("onWSClose ");
-        //setTimeout(showConnecting, delay);
-        //delay *= 1.5;
+        setTimeout(showConnecting, delay);
+        console.log("Socket closed");
+        delay *= 1.5;
     }
-
-    function onWsMessage(msg) {
-        handleWsMessage(new DataView(msg.data));
+    function onWsMSG(msg) {
+        handleWsMSG(new DataView(msg.data));
     }
-
-    function handleWsMessage(msg) {
+    function handleWsMSG(msg) {
         function getString() {
             var text = '',
                 char;
-            while ((char = msg.getUint16(offset, true)) != 0) {
+            while ((char = msg.getUint16(offset, 1)) != 0) {
                 offset += 2;
                 text += String.fromCharCode(char);
             }
             offset += 2;
             return text;
         }
-
         var offset = 0,
-            setCustomLB = false;
+            setCustomLB = 0;
         240 == msg.getUint8(offset) && (offset += 5);
         switch (msg.getUint8(offset++)) {
             case 16: // update nodes
                 updateNodes(msg, offset);
                 break;
             case 17: // update position
-                posX = msg.getFloat32(offset, true);
+                posX = msg.getFloat32(offset, 1);
                 offset += 4;
-                posY = msg.getFloat32(offset, true);
+                posY = msg.getFloat32(offset, 1);
                 offset += 4;
-                posSize = msg.getFloat32(offset, true);
+                posSize = msg.getFloat32(offset, 1);
                 offset += 4;
                 break;
             case 20: // clear nodes
@@ -416,64 +563,68 @@
                 nodesOnScreen = [];
                 break;
             case 21: // draw line
-                lineX = msg.getInt16(offset, true);
+                lineX = msg.getInt16(offset, 1);
                 offset += 2;
-                lineY = msg.getInt16(offset, true);
+                lineY = msg.getInt16(offset, 1);
                 offset += 2;
                 if (!drawLine) {
-                    drawLine = true;
+                    drawLine = 1;
                     drawLineX = lineX;
                     drawLineY = lineY;
                 }
                 break;
             case 32: // add node
-                nodesOnScreen.push(msg.getUint32(offset, true));
+                nodesOnScreen.push(msg.getUint32(offset, 1));
                 offset += 4;
                 break;
             case 48: // update leaderboard (custom text)
-                setCustomLB = true;
-                noRanking = true;
+                setCustomLB = 1;
+                noRanking = 1;
                 break;
             case 49: // update leaderboard (ffa)
                 if (!setCustomLB) {
-                    noRanking = false;
+                    noRanking = 0;
                 }
                 teamScores = null;
-                var LBplayerNum = msg.getUint32(offset, true);
+                var LBplayerNum = msg.getUint32(offset, 1);
                 offset += 4;
                 leaderBoard = [];
                 for (i = 0; i < LBplayerNum; ++i) {
-                    var nodeId = msg.getUint32(offset, true);
+                    var nodeId = msg.getUint32(offset, 1);
                     offset += 4;
                     leaderBoard.push({
                         id: nodeId,
                         name: getString()
-                    })
+                    });
                 }
-                drawLeaderBoard();
+                drawLB();
                 break;
             case 50: // update leaderboard (teams)
                 teamScores = [];
-                var LBteamNum = msg.getUint32(offset, true);
+                var LBteamNum = msg.getUint32(offset, 1);
                 offset += 4;
                 for (var i = 0; i < LBteamNum; ++i) {
-                    teamScores.push(msg.getFloat32(offset, true));
+                    teamScores.push(msg.getFloat32(offset, 1));
                     offset += 4;
                 }
-                drawLeaderBoard();
+                drawLB();
                 break;
             case 64: // set border
-                leftPos = msg.getFloat64(offset, true);
+                leftPos = msg.getFloat64(offset, 1);
                 offset += 8;
-                topPos = msg.getFloat64(offset, true);
+                topPos = msg.getFloat64(offset, 1);
                 offset += 8;
-                rightPos = msg.getFloat64(offset, true);
+                rightPos = msg.getFloat64(offset, 1);
                 offset += 8;
-                bottomPos = msg.getFloat64(offset, true);
+                bottomPos = msg.getFloat64(offset, 1);
                 offset += 8;
                 posX = (rightPos + leftPos) / 2;
                 posY = (bottomPos + topPos) / 2;
                 posSize = 1;
+                minX = leftPos;
+                minY = topPos;
+                maxX = rightPos;
+                maxY = bottomPos;
                 if (0 == playerCells.length) {
                     nodeX = posX;
                     nodeY = posY;
@@ -485,33 +636,22 @@
                 break;
         }
     }
-
     function addChat(view, offset) {
         function getString() {
             var text = '',
                 char;
-            while ((char = view.getUint16(offset, true)) != 0) {
+            while ((char = view.getUint16(offset, 1)) != 0) {
                 offset += 2;
                 text += String.fromCharCode(char);
             }
             offset += 2;
             return text;
         }
-
         var flags = view.getUint8(offset++);
-
-        if (flags & 0x80) {
-            // SERVER Message
-        }
-
-        if (flags & 0x40) {
-            // ADMIN Message
-        }
-
-        if (flags & 0x20) {
-            // MOD Message
-        }
-
+        // for future expansions
+        if (flags & 2) offset += 4;
+        if (flags & 4) offset += 8;
+        if (flags & 8) offset += 16;
         var r = view.getUint8(offset++),
             g = view.getUint8(offset++),
             b = view.getUint8(offset++),
@@ -528,28 +668,16 @@
         });
         drawChatBoard();
     }
-
     function drawChatBoard() {
-        if (hideChat) {
-            chatCanvas = null;
-            return;
-        }
         chatCanvas = document.createElement("canvas");
         var ctx = chatCanvas.getContext("2d");
-        var scaleFactor = Math.min(Math.max(canvasWidth / 1200, 0.75), 1); //scale factor = 0.75 to 1
-        chatCanvas.width = 1E3 * scaleFactor;
+        var scaleFactor = Math.min(Math.max(canvasWidth / 1200, .75), 1); // Scale factor = .75 to 1
+        chatCanvas.width = 1000 * scaleFactor;
         chatCanvas.height = 550 * scaleFactor;
         ctx.scale(scaleFactor, scaleFactor);
-        var nowtime = Date.now();
-        var lasttime = 0;
-        if (chatBoard.length >= 1)
-            lasttime = chatBoard[chatBoard.length - 1].time;
-        else return;
-        var deltat = nowtime - lasttime;
-        ctx.globalAlpha = 0.8 * Math.exp(-deltat / 25000);
-
+        ctx.globalAlpha = .8;
         var len = chatBoard.length;
-        var from = len - 15;
+        var from = len - 10; // Max amount of lines to display on a chat board
         if (from < 0) from = 0;
         for (var i = 0; i < (len - from); i++) {
             var chatName = new UText(18, chatBoard[i + from].color);
@@ -557,25 +685,21 @@
             var width = chatName.getWidth();
             var a = chatName.render();
             ctx.drawImage(a, 15, chatCanvas.height / scaleFactor - 24 * (len - i - from));
-
-            var chatText = new UText(18, '#666666');
+            var chatText = new UText(18, '#666');
             chatText.setValue(':' + chatBoard[i + from].message);
             a = chatText.render();
             ctx.drawImage(a, 15 + width * 1.8, chatCanvas.height / scaleFactor - 24 * (len - from - i));
         }
     }
-
-
     function updateNodes(view, offset) {
-        timestamp = +new Date;
+        timestamp = +new Date();
         var code = Math.random();
-        ua = false;
-        var queueLength = view.getUint16(offset, true);
+        ua = 0;
+        var queueLength = view.getUint16(offset, 1);
         offset += 2;
-
         for (i = 0; i < queueLength; ++i) {
-            var killer = nodes[view.getUint32(offset, true)],
-                killedNode = nodes[view.getUint32(offset + 4, true)];
+            var killer = nodes[view.getUint32(offset, 1)],
+                killedNode = nodes[view.getUint32(offset + 4, 1)];
             offset += 8;
             if (killer && killedNode) {
                 killedNode.destroy();
@@ -588,47 +712,39 @@
                 killedNode.updateTime = timestamp;
             }
         }
-
-        for (var i = 0; ;) {
-            var nodeid = view.getUint32(offset, true);
+        for (var i = 0;;) {
+            var nodeid = view.getUint32(offset, 1);
             offset += 4;
             if (0 == nodeid) break;
             ++i;
-
-            var size, posY, posX = view.getInt32(offset, true);
+            var size, posY, posX = view.getInt32(offset, 1);
             offset += 4;
-            posY = view.getInt32(offset, true);
+            posY = view.getInt32(offset, 1);
             offset += 4;
-            size = view.getInt16(offset, true);
+            size = view.getInt16(offset, 1);
             offset += 2;
-
             for (var r = view.getUint8(offset++), g = view.getUint8(offset++), b = view.getUint8(offset++),
                 color = (r << 16 | g << 8 | b).toString(16); 6 > color.length;) color = "0" + color;
             var colorstr = "#" + color,
                 flags = view.getUint8(offset++),
-                flagVirus = !!(flags & 0x01),
-                flagEjected = !!(flags & 0x20),
-                flagAgitated = !!(flags & 0x10),
+                flagVirus = !!(flags & 1),
+                flagAgitated = !!(flags & 16),
                 _skin = "";
-
             flags & 2 && (offset += 4);
-
             if (flags & 4) {
-                for (; ;) { // skin name
-                    t = view.getUint8(offset, true) & 0x7F;
+                for (;;) { // Skin name
+                    var t = view.getUint8(offset, 1) & 0x7F;
                     offset += 1;
                     if (0 == t) break;
                     _skin += String.fromCharCode(t);
                 }
             }
-
-            for (var char, name = ""; ;) { // nick name
-                char = view.getUint16(offset, true);
+            for (var char, name = "";;) { // Nick name
+                char = view.getUint16(offset, 1);
                 offset += 2;
                 if (0 == char) break;
                 name += String.fromCharCode(char);
             }
-
             var node = null;
             if (nodes.hasOwnProperty(nodeid)) {
                 node = nodes[nodeid];
@@ -645,11 +761,10 @@
                 node.la = posY;
             }
             node.isVirus = flagVirus;
-            node.isEjected = flagEjected;
             node.isAgitated = flagAgitated;
             node.nx = posX;
             node.ny = posY;
-            node.setSize(size);
+            node.nSize = size;
             node.updateCode = code;
             node.updateTime = timestamp;
             node.flag = flags;
@@ -663,17 +778,16 @@
                 }
             }
         }
-        queueLength = view.getUint32(offset, true);
+        queueLength = view.getUint32(offset, 1);
         offset += 4;
         for (i = 0; i < queueLength; i++) {
-            var nodeId = view.getUint32(offset, true);
+            var nodeId = view.getUint32(offset, 1);
             offset += 4;
             node = nodes[nodeId];
             null != node && node.destroy();
         }
-        ua && 0 == playerCells.length && showOverlays(false)
+        ua && 0 == playerCells.length && showOverlays(0);
     }
-
     function sendMouseMove() {
         var msg;
         if (wsIsOpen()) {
@@ -684,23 +798,21 @@
                 oldY = Y;
                 msg = prepareData(21);
                 msg.setUint8(0, 16);
-                msg.setFloat64(1, X, true);
-                msg.setFloat64(9, Y, true);
-                msg.setUint32(17, 0, true);
+                msg.setFloat64(1, X, 1);
+                msg.setFloat64(9, Y, 1);
+                msg.setUint32(17, 0, 1);
                 wsSend(msg);
             }
         }
     }
-
     function sendNickName() {
         if (wsIsOpen() && null != userNickName) {
             var msg = prepareData(1 + 2 * userNickName.length);
             msg.setUint8(0, 0);
-            for (var i = 0; i < userNickName.length; ++i) msg.setUint16(1 + 2 * i, userNickName.charCodeAt(i), true);
-            wsSend(msg)
+            for (var i = 0; i < userNickName.length; ++i) msg.setUint16(1 + 2 * i, userNickName.charCodeAt(i), 1);
+            wsSend(msg);
         }
     }
-
     function sendChat(str) {
         if (wsIsOpen() && (str.length < 200) && (str.length > 0) && !hideChat) {
             var msg = prepareData(2 + 2 * str.length);
@@ -708,46 +820,38 @@
             msg.setUint8(offset++, 99);
             msg.setUint8(offset++, 0); // flags (0 for now)
             for (var i = 0; i < str.length; ++i) {
-                msg.setUint16(offset, str.charCodeAt(i), true);
+                msg.setUint16(offset, str.charCodeAt(i), 1);
                 offset += 2;
             }
-
             wsSend(msg);
         }
     }
-
     function wsIsOpen() {
-        return null != ws && ws.readyState == ws.OPEN
+        return null != ws && ws.readyState == ws.OPEN;
     }
-
     function sendUint8(a) {
         if (wsIsOpen()) {
             var msg = prepareData(1);
             msg.setUint8(0, a);
-            wsSend(msg)
+            wsSend(msg);
         }
     }
-
     function redrawGameScene() {
-        drawGameScene();
-        wHandle.requestAnimationFrame(redrawGameScene)
+        drawScene();
+        wHandle.reqAnimFrame(redrawGameScene);
     }
-
     function canvasResize() {
         window.scrollTo(0, 0);
         canvasWidth = wHandle.innerWidth;
         canvasHeight = wHandle.innerHeight;
         nCanvas.width = canvasWidth;
         nCanvas.height = canvasHeight;
-        drawGameScene()
+        drawScene();
     }
-
     function viewRange() {
-        var ratio;
-        ratio = Math.max(canvasHeight / 1080, canvasWidth / 1920);
+        var ratio = Math.max(canvasHeight / 1080, canvasWidth / 1920);
         return ratio * zoom;
     }
-
     function calcViewZoom() {
         if (0 != playerCells.length) {
             for (var newViewZoom = 0, i = 0; i < playerCells.length; i++) newViewZoom += playerCells[i].size;
@@ -755,8 +859,7 @@
             viewZoom = (9 * viewZoom + newViewZoom) / 10;
         }
     }
-
-    function drawGameScene() {
+    function drawScene() {
         var a, oldtime = Date.now();
         ++cb;
         timestamp = oldtime;
@@ -772,46 +875,46 @@
             posY = c;
             posSize = viewZoom;
             nodeX = (nodeX + a) / 2;
-            nodeY = (nodeY + c) / 2
+            nodeY = (nodeY + c) / 2;
         } else {
             nodeX = (29 * nodeX + posX) / 30;
             nodeY = (29 * nodeY + posY) / 30;
             viewZoom = (9 * viewZoom + posSize * viewRange()) / 10;
         }
         buildQTree();
-        mouseCoordinateChange();
-        xa || ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-        if (xa) {
+        mouseCoordChange();
+        acidMode || ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        if (acidMode) {
             if (showDarkTheme) {
-                ctx.fillStyle = '#111111';
-                ctx.globalAlpha = .05;
+                ctx.fillStyle = '#111';
+                ctx.globalAlpha = .07;
                 ctx.fillRect(0, 0, canvasWidth, canvasHeight);
                 ctx.globalAlpha = 1;
             } else {
                 ctx.fillStyle = '#F2FBFF';
-                ctx.globalAlpha = .05;
+                ctx.globalAlpha = .07;
                 ctx.fillRect(0, 0, canvasWidth, canvasHeight);
                 ctx.globalAlpha = 1;
             }
         } else {
             drawGrid();
         }
-        nodelist.sort(function (a, b) {
-            return a.size === b.size ? a.id - b.id : a.size - b.size
+        nodelist.sort(function(a, b) {
+            return a.size == b.size ? a.id - b.id : a.size - b.size;
         });
         ctx.save();
         ctx.translate(canvasWidth / 2, canvasHeight / 2);
         ctx.scale(viewZoom, viewZoom);
         ctx.translate(-nodeX, -nodeY);
+        drawBorders(ctx);
+        drawSectors(ctx);
         for (d = 0; d < Cells.length; d++) Cells[d].drawOneCell(ctx);
-
         for (d = 0; d < nodelist.length; d++) nodelist[d].drawOneCell(ctx);
         if (drawLine) {
-            drawLineX = (3 * drawLineX + lineX) /
-                4;
+            drawLineX = (3 * drawLineX + lineX) / 4;
             drawLineY = (3 * drawLineY + lineY) / 4;
             ctx.save();
-            ctx.strokeStyle = "#FFAAAA";
+            ctx.strokeStyle = "#FAA";
             ctx.lineWidth = 10;
             ctx.lineCap = "round";
             ctx.lineJoin = "round";
@@ -822,36 +925,32 @@
                 ctx.lineTo(drawLineX, drawLineY);
             }
             ctx.stroke();
-            ctx.restore()
+            ctx.restore();
         }
         ctx.restore();
-        lbCanvas && lbCanvas.width && ctx.drawImage(lbCanvas, canvasWidth - lbCanvas.width - 10, 10); // draw Leader Board
-        if (chatCanvas != null) ctx.drawImage(chatCanvas, 0, canvasHeight - chatCanvas.height - 50); // draw Leader Board
-
-        userScore = Math.max(userScore, calcUserScore());
+        lbCanvas && lbCanvas.width && ctx.drawImage(lbCanvas, canvasWidth - lbCanvas.width - 10, 10); // Draw Leader Board
+        if (chatCanvas != null && !hideChat) ctx.drawImage(chatCanvas, 0, canvasHeight - chatCanvas.height - 50); // Draw Chat Board
+        userScore = Math.max(userScore, calcScore());
         if (0 != userScore) {
-            if (null == scoreText) {
-                scoreText = new UText(24, '#FFFFFF');
-            }
-            scoreText.setValue('Score: ' + ~~(userScore / 100));
+            if (null == scoreText) scoreText = new UText(24, '#FFF');
+            if (showPosition) position = "  |  Position: " + nodeX.toFixed(0) + ", " + nodeY.toFixed(0);
+            else var position = "";
+            scoreText.setValue('Score: ' + ~~(userScore / 100) + position);
             c = scoreText.render();
             a = c.width;
             ctx.globalAlpha = .2;
-            ctx.fillStyle = '#000000';
+            ctx.fillStyle = '#000';
             ctx.fillRect(10, 10, a + 10, 34); //canvasHeight - 10 - 24 - 10
             ctx.globalAlpha = 1;
             ctx.drawImage(c, 15, 15); //canvasHeight - 10 - 24 - 5
         }
         drawSplitIcon(ctx);
-
         drawTouch(ctx);
-        //drawChatBoard();
         var deltatime = Date.now() - oldtime;
         deltatime > 1E3 / 60 ? z -= .01 : deltatime < 1E3 / 65 && (z += .01);
         .4 > z && (z = .4);
-        1 < z && (z = 1)
+        1 < z && (z = 1);
     }
-
     function drawTouch(ctx) {
         ctx.save();
         if (touchable) {
@@ -859,108 +958,106 @@
                 var touch = touches[i];
                 if (touch.identifier == leftTouchID) {
                     ctx.beginPath();
-                    ctx.strokeStyle = "#0096ff";
+                    ctx.strokeStyle = "#0096FF";
                     ctx.lineWidth = 6;
-                    ctx.arc(leftTouchStartPos.x, leftTouchStartPos.y, 40, 0, Math.PI * 2, true);
+                    ctx.arc(leftTouchStartPos.x, leftTouchStartPos.y, 40, 0, Math.PI * 2, 1);
                     ctx.stroke();
                     ctx.beginPath();
-                    ctx.strokeStyle = "#0096ff";
+                    ctx.strokeStyle = "#0096FF";
                     ctx.lineWidth = 2;
-                    ctx.arc(leftTouchStartPos.x, leftTouchStartPos.y, 60, 0, Math.PI * 2, true);
+                    ctx.arc(leftTouchStartPos.x, leftTouchStartPos.y, 60, 0, Math.PI * 2, 1);
                     ctx.stroke();
                     ctx.beginPath();
-                    ctx.strokeStyle = "#0096ff";
-                    ctx.arc(leftTouchPos.x, leftTouchPos.y, 40, 0, Math.PI * 2, true);
+                    ctx.strokeStyle = "#0096FF";
+                    ctx.arc(leftTouchPos.x, leftTouchPos.y, 40, 0, Math.PI * 2, 1);
                     ctx.stroke();
                 } else {
                     ctx.beginPath();
                     ctx.beginPath();
-                    ctx.strokeStyle = "#0096ff";
+                    ctx.strokeStyle = "#0096FF";
                     ctx.lineWidth = "6";
-                    ctx.arc(touch.clientX, touch.clientY, 40, 0, Math.PI * 2, true);
+                    ctx.arc(touch.clientX, touch.clientY, 40, 0, Math.PI * 2, 1);
                     ctx.stroke();
                 }
             }
         }
         ctx.restore();
     }
-
     function drawGrid() {
         ctx.fillStyle = showDarkTheme ? "#111111" : "#F2FBFF";
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
         ctx.save();
-        ctx.strokeStyle = showDarkTheme ? "#AAAAAA" : "#000000";
-        ctx.globalAlpha = .2;
+        ctx.strokeStyle = showDarkTheme ? "#AAA" : "#000";
+        ctx.globalAlpha = .05;
         ctx.scale(viewZoom, viewZoom);
         var a = canvasWidth / viewZoom,
             b = canvasHeight / viewZoom;
-        for (var c = -.5 + (-nodeX + a / 2) % 50; c < a; c += 50) {
-            ctx.moveTo(c, 0);
-            ctx.lineTo(c, b);
+        if (showGrid) {
+            for (var c = -.5 + (-nodeX + a / 2) % 50; c < a; c += 50) {
+                ctx.beginPath();
+                ctx.moveTo(c, 0);
+                ctx.lineTo(c, b);
+                ctx.stroke();
+            }
+            for (c = -.5 + (-nodeY + b / 2) % 50; c < b; c += 50) {
+                ctx.beginPath();
+                ctx.moveTo(0, c);
+                ctx.lineTo(a, c);
+                ctx.stroke();
+            }
         }
-        ctx.stroke();
-        ctx.beginPath();
-        for (c = -.5 + (-nodeY + b / 2) % 50; c < b; c += 50) {
-            ctx.moveTo(0, c);
-            ctx.lineTo(a, c);
-        }
-        ctx.stroke()
-        ctx.restore()
+        ctx.restore();
     }
-
     function drawSplitIcon(ctx) {
         if (isTouchStart && splitIcon.width) {
             var size = ~~(canvasWidth / 7);
             ctx.drawImage(splitIcon, canvasWidth - size, canvasHeight - size, size, size);
         }
-
         if (isTouchStart && splitIcon.width) {
-            var size = ~~(canvasWidth / 7);
+            size = ~~(canvasWidth / 7);
             ctx.drawImage(ejectIcon, canvasWidth - size, canvasHeight - 2 * size - 10, size, size);
         }
     }
-
-    function calcUserScore() {
+    function calcScore() {
         for (var score = 0, i = 0; i < playerCells.length; i++) score += playerCells[i].nSize * playerCells[i].nSize;
-        return score
+        return score;
     }
-
-    function drawLeaderBoard() {
+    function drawLB() {
         lbCanvas = null;
-        var drawTeam = null != teamScores;
-        if (drawTeam || 0 != leaderBoard.length)
-            if (drawTeam || showName) {
+        if (null != teamScores || 0 != leaderBoard.length) {
+            if (null != teamScores || showName) {
                 lbCanvas = document.createElement("canvas");
                 var ctx = lbCanvas.getContext("2d"),
                     boardLength = 60;
-                boardLength = !drawTeam ? boardLength + 24 * leaderBoard.length : boardLength + 180;
-                var scaleFactor = Math.min(0.22 * canvasHeight, Math.min(200, .3 * canvasWidth)) * 0.005;
+                boardLength = null == teamScores ? boardLength + 24 * leaderBoard.length : boardLength + 180;
+                var scaleFactor = Math.min(.22 * canvasHeight, Math.min(200, .3 * canvasWidth)) / 200;
                 lbCanvas.width = 200 * scaleFactor;
                 lbCanvas.height = boardLength * scaleFactor;
-
                 ctx.scale(scaleFactor, scaleFactor);
                 ctx.globalAlpha = .4;
-                ctx.fillStyle = "#000000";
+                ctx.fillStyle = "#000";
                 ctx.fillRect(0, 0, 200, boardLength);
-
                 ctx.globalAlpha = 1;
-                ctx.fillStyle = "#FFFFFF";
+                ctx.fillStyle = "#FFF";
                 var c = "Leaderboard";
                 ctx.font = "30px Ubuntu";
-                ctx.fillText(c, 100 - ctx.measureText(c).width * 0.5, 40);
-                var b, l;
-                if (!drawTeam) {
-                    for (ctx.font = "20px Ubuntu", b = 0, l = leaderBoard.length; b < l; ++b) {
+                ctx.fillText(c, 100 - ctx.measureText(c).width / 2, 40);
+                var b;
+                if (null == teamScores) {
+                    for (ctx.font = "20px Ubuntu", b = 0; b < leaderBoard.length; ++b) {
                         c = leaderBoard[b].name || "An unnamed cell";
-                        if (!showName) {
-                            (c = "An unnamed cell");
+                        if (!showName) c = "An unnamed cell";
+                        if (-1 != nodesOnScreen.indexOf(leaderBoard[b].id)) {
+                            playerCells[0].name && (c = playerCells[0].name);
+                            var userLBColor = String($("#lbColor").val());
+                            ctx.fillStyle = "#" + userLBColor;
+                            if (!noRanking) c = b + 1 + ". " + c;
+                            ctx.fillText(c, 100 - ctx.measureText(c).width / 2, 70 + 24 * b);
+                        } else {
+                            ctx.fillStyle = "#FFF";
+                            if (!noRanking) c = b + 1 + ". " + c;
+                            ctx.fillText(c, 100 - ctx.measureText(c).width / 2, 70 + 24 * b);
                         }
-                        var me = -1 != nodesOnScreen.indexOf(leaderBoard[b].id);
-                        if (me) playerCells[0].name && (c = playerCells[0].name);
-                        me ? ctx.fillStyle = "#FFAAAA" : ctx.fillStyle = "#FFFFFF";
-                        if (!noRanking) c = b + 1 + ". " + c;
-                        var start = (ctx.measureText(c).width > 200) ? 2 : 100 - ctx.measureText(c).width * 0.5;
-                        ctx.fillText(c, start, 70 + 24 * b);
                     }
                 } else {
                     for (b = c = 0; b < teamScores.length; ++b) {
@@ -968,14 +1065,61 @@
                         ctx.fillStyle = teamColor[b + 1];
                         ctx.beginPath();
                         ctx.moveTo(100, 140);
-                        ctx.arc(100, 140, 80, c, d, false);
+                        ctx.arc(100, 140, 80, c, d, 0);
                         ctx.fill();
-                        c = d
+                        c = d;
                     }
                 }
             }
+        }
     }
-
+    function drawBorders() {
+        if (!showBorders) return;
+        ctx.save();
+        if (!String($("#borderColor").val())) ctx.strokeStyle = "#FF0";
+        else ctx.strokeStyle = "#" + String($("#borderColor").val());
+        ctx.lineWidth = 20;
+        ctx.beginPath();
+        ctx.moveTo(minX, minY);
+        ctx.lineTo(maxX, minY);
+        ctx.lineTo(maxX, maxY);
+        ctx.lineTo(minX, maxY);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
+    }
+    function drawSectors() {
+        if (!showSectors) return;
+        //ctx.strokeRect(minX, maxY, 500, 500);
+        var x = Math.round(minX) + 65;
+        var y = Math.round(minY) + 65;
+        var letter = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+        var w = (Math.round(maxX) - 65 - x) / 5;
+        var h = (Math.round(maxY) - 65 - y) / 5;
+        ctx.save();
+        ctx.beginPath();
+        ctx.lineWidth = .05;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.font = w * .6 + "px Russo One";
+        if (!String($("#sectorColor").val())) var color = "1A1A1A";
+        else color = String($("#sectorColor").val());
+        ctx.fillStyle = "#" + color;
+        var j = 0;
+        for (; 5 > j; j++) {
+            var i = 0;
+            for (; 5 > i; i++) ctx.fillText(letter[j] + (i + 1), x + w * i + w / 2, y + h * j + h / 2);
+        }
+        ctx.lineWidth = 100;
+        ctx.strokeStyle = "#" + color;
+        j = 0;
+        for (; 5 > j; j++) {
+            i = 0;
+            for (; 5 > i; i++) ctx.strokeRect(x + w * i, y + h * j, w, h);
+        }
+        ctx.stroke();
+        ctx.restore();
+    }
     function Cell(uid, ux, uy, usize, ucolor, uname, a) {
         this.id = uid;
         this.ox = this.x = ux;
@@ -985,21 +1129,23 @@
         this.points = [];
         this.pointsAcc = [];
         this.createPoints();
-        this.setName(uname)
+        this.setName(uname);
         this._skin = a;
     }
-
     function UText(usize, ucolor, ustroke, ustrokecolor) {
         usize && (this._size = usize);
         ucolor && (this._color = ucolor);
         this._stroke = !!ustroke;
-        ustrokecolor && (this._strokeColor = ustrokecolor)
+        ustrokecolor && (this._strokeColor = ustrokecolor);
     }
-
-
-    var localProtocol = wHandle.location.protocol,
-        localProtocolHttps = "https:" == localProtocol;
-    var nCanvas, ctx, mainCanvas, lbCanvas, chatCanvas, canvasWidth, canvasHeight, qTree = null,
+    var nCanvas,
+        ctx,
+        mainCanvas,
+        lbCanvas,
+        chatCanvas,
+        canvasWidth,
+        canvasHeight,
+        qTree = null,
         ws = null,
         nodeX = 0,
         nodeY = 0,
@@ -1022,140 +1168,142 @@
         rightPos = 1E4,
         bottomPos = 1E4,
         viewZoom = 1,
-        showSkin = true,
-        showName = true,
-        showColor = false,
-        ua = false,
+        ua = 0,
         userScore = 0,
-        showDarkTheme = false,
-        showMass = false,
-        hideChat = false,
-        smoothRender = .4,
+        /* v settings v */
+        showSkin = 1,
+        showName = 1,
+        showColor = 0,
+        showCellBorder = 0,
+        showPosition = 0,
+        showDarkTheme = 0,
+        showSectors = 0,
+        nameShadows = 0,
+        showMass = 0,
+        showGrid = 1,
+        hideChat = 0,
+        showBorders = 0,
+        transparentCells = 0,
+        smoothRender = 2,
+        infiniteZoom = 0,
+        /* ^ settings ^ */
         posX = nodeX = ~~((leftPos + rightPos) / 2),
         posY = nodeY = ~~((topPos + bottomPos) / 2),
         posSize = 1,
+        gameMode = "",
         teamScores = null,
-        ma = false,
-        hasOverlay = true,
-        drawLine = false,
+        connecting = 0,
+        hasOverlay = 1,
+        drawLine = 0,
         lineX = 0,
         lineY = 0,
         drawLineX = 0,
         drawLineY = 0,
         Ra = 0,
         teamColor = ["#333333", "#FF3333", "#33FF33", "#3333FF"],
-        xa = false,
+        acidMode = 0,
         zoom = 1,
         isTouchStart = "ontouchstart" in wHandle && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
         splitIcon = new Image,
         ejectIcon = new Image,
-        noRanking = false;
+        minX = 0,
+        minY = 0,
+        maxX = 0,
+        maxY = 0,
+        noRanking = 0;
     splitIcon.src = "assets/img/split.png";
     ejectIcon.src = "assets/img/feed.png";
-    var wCanvas = document.createElement("canvas");
-    var playerStat = null;
-    wHandle.isSpectating = false;
-    wHandle.setNick = function (arg) {
+    wHandle.isSpectating = 0;
+    wHandle.setNick = function(arg) {
         hideOverlays();
         userNickName = arg;
         sendNickName();
-        userScore = 0
+        userScore = 0;
     };
-    wHandle.setSkins = function (arg) {
-        showSkin = arg
+    wHandle.setSkins = function(arg) {
+        showSkin = arg;
     };
-    wHandle.setNames = function (arg) {
-        showName = arg
+    wHandle.setNames = function(arg) {
+        showName = arg;
     };
-    wHandle.setDarkTheme = function (arg) {
-        showDarkTheme = arg
+    wHandle.setCellBorder = function(arg) {
+        showCellBorder = arg;
     };
-    wHandle.setColors = function (arg) {
-        showColor = arg
+    wHandle.setCellPos = function (arg) {
+        showPosition = arg;
     };
-    wHandle.setShowMass = function (arg) {
-        showMass = arg
+    wHandle.setDarkTheme = function(arg) {
+        showDarkTheme = arg;
     };
-    wHandle.setSmooth = function (arg) {
-        smoothRender = arg ? 2 : .4
+    wHandle.setColors = function(arg) {
+        showColor = arg;
     };
-    wHandle.setChatHide = function (arg) {
+    wHandle.setShowMass = function(arg) {
+        showMass = arg;
+    };
+    wHandle.setSmooth = function(arg) {
+        smoothRender = arg ? 2 : 0;
+    };
+    wHandle.setMapBorders = function(arg) {
+        showBorders = arg;
+    };
+    wHandle.setMapSectors = function(arg) {
+        showSectors = arg;
+    };
+    wHandle.setNameShadows = function(arg) {
+        nameShadows = arg;
+    };
+    wHandle.setZoom = function(arg) {
+        infiniteZoom = arg;
+    };
+    wHandle.setChatHide = function(arg) {
         hideChat = arg;
-        if (hideChat) {
-            wjQuery('#chat_textbox').hide();
-        } else {
-            wjQuery('#chat_textbox').show();
-        }
-    }
-    wHandle.spectate = function () {
+        hideChat ? wjQuery('#chat_textbox').hide() : wjQuery('#chat_textbox').show();
+    };
+    wHandle.setMapGrid = function(arg) {
+        showGrid = arg;
+    };
+    wHandle.setTransparent = function(arg) {
+        transparentCells = arg;
+    };
+    wHandle.spectate = function() {
         userNickName = null;
-        wHandle.isSpectating = true;
+        wHandle.isSpectating = 1;
         sendUint8(1);
-        hideOverlays()
+        hideOverlays();
     };
-    wHandle.setAcid = function (arg) {
-        xa = arg
-    };
-    wHandle.openSkinsList = function (arg) {
-        if ($('#inPageModalTitle').text() != "Skins") {
-            $.get('include/gallery.php').then(function (data) {
-                $('#inPageModalTitle').text("Skins");
-                $('#inPageModalBody').html(data);
-            });
+    wHandle.setGameMode = function(arg) {
+        if (arg != gameMode) {
+            gameMode = arg;
+            showConnecting();
         }
     };
-
+    wHandle.setAcid = function(arg) {
+        acidMode = arg;
+    };
     if (null != wHandle.localStorage) {
-        wjQuery(window).load(function () {
-            wjQuery(".save").each(function () {
-                var id = $(this).data("box-id");
-                var value = wHandle.localStorage.getItem("checkbox-" + id);
-                if (value && value == "true" && 0 != id) {
-                    $(this).prop("checked", "true");
-                    $(this).trigger("change");
-                } else if (id == 0 && value != null) {
-                    $(this).val(value);
-                }
-            });
-            wjQuery(".save").change(function () {
-                var id = $(this).data('box-id');
-                var value = (id == 0) ? $(this).val() : $(this).prop('checked');
-                wHandle.localStorage.setItem("checkbox-" + id, value);
-            });
-        });
         if (null == wHandle.localStorage.AB8) {
             wHandle.localStorage.AB8 = ~~(100 * Math.random());
         }
+        Ra = +wHandle.localStorage.AB8;
+        wHandle.ABGroup = Ra;
     }
-
-    setTimeout(function () { }, 3E5);
+    setTimeout(function() {}, 3E5);
     var T = {
         ZW: "EU-London"
     };
     wHandle.connect = wsConnect;
-
     var data = {
         "action": "test"
     };
-    fetch('skinList.txt').then(resp => resp.text()).then(data => {
-        const skins = data.split(',').filter(name => name.length > 0);
-        console.log(skins);
-        for (var i = 0; i < skins.length; i++) {
-            if (-1 == knownNameDict.indexOf(skins[i])) {
-                knownNameDict.push(skins[i]);
-            }
-        }
-    });
-
-    var delay = 500,
+    var delay = 500, // Animation delay (for non-smooth rendering instances)
         oldX = -1,
         oldY = -1,
-        Canvas = null,
         z = 1,
         scoreText = null,
         skins = {},
-        knownNameDict = "".split(";"),
-        knownNameDict_noDisp = [],
+        knownNameDict = "ugandan knuckles;latvia;fidget red;fidget blue;fidget black;fidget green;fidget yellow;fidget grey;fidget orange;fidget white;fidget spinner;illuminati;dodge charger;cr king;dark theme;mercury;cell;virus;basketball;rockstar n;penta;rockstar s;penta;creeper;dragon;chrome;hellcat;poland;usa;china;russia;canada;australia;spain;brazil;germany;ukraine;france;sweden;chaplin;north korea;south korea;japan;united kingdom;earth;greece;latvia;lithuania;estonia;finland;norway;cia;maldivas;ussr;austria;nigeria;reddit;yaranaika;confederate;9gag;indiana;imperial japan;apple;4chan;italy;cat;bulgaria;tumblr;2ch.hk;hong kong;portugal;jamaica;german empire;mexico;sanik;switzerland;croatia;chile;indonesia;bangladesh;thailand;iran;iraq;peru;moon;botswana;bosnia;netherlands;european union;taiwan;pakistan;hungary;satanist;qing dynasty;matriarchy;patriarchy;feminism;ireland;texas;facepunch;prodota;cambodia;steam;piccolo;ea;india;kc;denmark;quebec;ayy lmao;sealand;bait;tsarist russia;origin;vinesauce;stalin;belgium;luxembourg;stussy;prussia;8ch;argentina;scotland;sir;romania;wojak;doge;nasa;byzantium;imperial japan;french kingdom;somalia;turkey;mars;pokerface;8;irs;receita federal;illuminati;facebook;putin;merkel;tsipras;obama;kim jong-un;dilma;hollande;berlusconi;cameron;clinton;hillary;venezuela;blatter;chavez;cuba;fidel;merkel;palin;queen;boris;bush;trump;underwood".split(";"),
+        knownNameDict_noDisp = "ugandan knuckles;fidget red;fidget blue;fidget black;fidget green;fidget yellow;fidget grey;fidget orange;fidget white;fidget spinner;cell;virus;8;EA;hellcat;cr king;nasa;putin;merkel;tsipras;obama;kim jong-un;dilma;hollande;berlusconi;cameron;clinton;hillary;blatter;chavez;fidel;merkel;palin;queen;boris;bush;trump;underwood;dodge charger;dark theme",
         ib = ["_canvas'blob"];
     Cell.prototype = {
         id: 0,
@@ -1177,54 +1325,49 @@
         updateTime: 0,
         updateCode: 0,
         drawTime: 0,
-        destroyed: false,
-        isVirus: false,
-        isEjected: false,
-        isAgitated: false,
-        wasSimpleDrawing: true,
-        destroy: function () {
+        destroyed: 0,
+        isVirus: 0,
+        isAgitated: 0,
+        wasSimpleDrawing: 1,
+        destroy: function() {
             var tmp;
-            for (tmp = 0, len = nodelist.length; tmp < len; tmp++)
-                if (nodelist[tmp] === this) {
+            for (tmp = 0; tmp < nodelist.length; tmp++)
+                if (nodelist[tmp] == this) {
                     nodelist.splice(tmp, 1);
-                    break
+                    break;
                 }
             delete nodes[this.id];
             tmp = playerCells.indexOf(this);
             if (-1 != tmp) {
-                ua = true;
+                ua = 1;
                 playerCells.splice(tmp, 1);
             }
             tmp = nodesOnScreen.indexOf(this.id);
-            if (-1 != tmp) nodesOnScreen.splice(tmp, 1);
-            this.destroyed = true;
-            Cells.push(this)
+            if (-1 != tmp) {
+                nodesOnScreen.splice(tmp, 1);
+            }
+            this.destroyed = 1;
+            Cells.push(this);
         },
-        getNameSize: function () {
-            return Math.max(~~(.3 * this.size), 24)
+        getNameSize: function() {
+            return Math.max(~~(this.size / 3.2), 2);
         },
-        setName: function (a) {
+        setName: function(a) {
             this.name = a;
             if (null == this.nameCache) {
-                this.nameCache = new UText(this.getNameSize(), "#FFFFFF", true, "#000000");
+                var nameColor = String($("#nameColor").val());
+                this.nameCache = new UText(this.getNameSize(), "#" + nameColor, 1, "#000");
                 this.nameCache.setValue(this.name);
             } else {
                 this.nameCache.setSize(this.getNameSize());
                 this.nameCache.setValue(this.name);
             }
         },
-        setSize: function (a) {
-            this.nSize = a;
-            var m = ~~(this.size * this.size * 0.01);
-            if (null === this.sizeCache)
-                this.sizeCache = new UText(this.getNameSize() * 0.5, "#FFFFFF", true, "#000000");
-            else this.sizeCache.setSize(this.getNameSize() * 0.5);
-        },
-        createPoints: function () {
+        createPoints: function() {
             for (var samplenum = this.getNumPoints(); this.points.length > samplenum;) {
                 var rand = ~~(Math.random() * this.points.length);
                 this.points.splice(rand, 1);
-                this.pointsAcc.splice(rand, 1)
+                this.pointsAcc.splice(rand, 1);
             }
             if (0 == this.points.length && 0 < samplenum) {
                 this.points.push({
@@ -1244,51 +1387,48 @@
                     x: point.x,
                     y: point.y
                 });
-                this.pointsAcc.splice(rand2, 0, this.pointsAcc[rand2])
+                this.pointsAcc.splice(rand2, 0, this.pointsAcc[rand2]);
             }
         },
-        getNumPoints: function () {
+        getNumPoints: function() {
             if (0 == this.id) return 16;
             var a = 10;
             if (20 > this.size) a = 0;
             if (this.isVirus) a = 30;
             var b = this.size;
-            if (!this.isVirus) (b *= viewZoom);
+            if (!this.isVirus)(b *= viewZoom);
             b *= z;
-            if (this.flag & 32) (b *= .25);
+            if (this.flag & 32)(b *= .25);
             return ~~Math.max(b, a);
         },
-        movePoints: function () {
+        movePoints: function() {
             this.createPoints();
             for (var points = this.points, pointsacc = this.pointsAcc, numpoints = points.length, i = 0; i < numpoints; ++i) {
                 var pos1 = pointsacc[(i - 1 + numpoints) % numpoints],
                     pos2 = pointsacc[(i + 1) % numpoints];
                 pointsacc[i] += (Math.random() - .5) * (this.isAgitated ? 3 : 1);
                 pointsacc[i] *= .7;
-                10 < pointsacc[i] && (pointsacc[i] = 10); -
-                    10 > pointsacc[i] && (pointsacc[i] = -10);
-                pointsacc[i] = (pos1 + pos2 + 8 * pointsacc[i]) / 10
+                10 < pointsacc[i] && (pointsacc[i] = 10); - 10 > pointsacc[i] && (pointsacc[i] = -10);
+                pointsacc[i] = (pos1 + pos2 + 8 * pointsacc[i]) / 10;
             }
             for (var ref = this, isvirus = this.isVirus ? 0 : (this.id / 1E3 + timestamp / 1E4) % (2 * Math.PI), j = 0; j < numpoints; ++j) {
                 var f = points[j].size,
                     e = points[(j - 1 + numpoints) % numpoints].size,
                     m = points[(j + 1) % numpoints].size;
                 if (15 < this.size && null != qTree && 20 < this.size * viewZoom && 0 != this.id) {
-                    var l = false,
+                    var l = 0,
                         n = points[j].x,
                         q = points[j].y;
-                    qTree.retrieve2(n - 5, q - 5, 10, 10, function (a) {
+                    qTree.retrieve2(n - 5, q - 5, 10, 10, function(a) {
                         if (a.ref != ref && 25 > (n - a.x) * (n - a.x) + (q - a.y) * (q - a.y)) {
-                            l = true;
+                            l = 1;
                         }
                     });
                     if (!l && points[j].x < leftPos || points[j].y < topPos || points[j].x > rightPos || points[j].y > bottomPos) {
-                        l = true;
+                        l = 1;
                     }
                     if (l) {
-                        if (0 < pointsacc[j]) {
-                            (pointsacc[j] = 0);
-                        }
+                        if (0 < pointsacc[j]) (pointsacc[j] = 0);
                         pointsacc[j] -= 1;
                     }
                 }
@@ -1300,51 +1440,38 @@
                 m = this.points[j].size;
                 this.isVirus && 0 == j % 2 && (m += 5);
                 points[j].x = this.x + Math.cos(e * j + isvirus) * m;
-                points[j].y = this.y + Math.sin(e * j + isvirus) * m
+                points[j].y = this.y + Math.sin(e * j + isvirus) * m;
             }
         },
-        updatePos: function () {
+        updatePos: function() {
             if (0 == this.id) return 1;
             var a;
             a = (timestamp - this.updateTime) / 120;
             a = 0 > a ? 0 : 1 < a ? 1 : a;
             var b = 0 > a ? 0 : 1 < a ? 1 : a;
             this.getNameSize();
-            if (this.destroyed && 1 <= b) {
-                var c = Cells.indexOf(this); -
-                    1 != c && Cells.splice(c, 1)
-            }
+            if (this.destroyed && 1 <= b)
+                var c = Cells.indexOf(this); - 1 != c && Cells.splice(c, 1);
             this.x = a * (this.nx - this.ox) + this.ox;
             this.y = a * (this.ny - this.oy) + this.oy;
             this.size = b * (this.nSize - this.oSize) + this.oSize;
             return b;
         },
-        shouldRender: function () {
-            if (0 == this.id) {
-                return true
-            } else {
-                return !(this.x + this.size + 40 < nodeX - canvasWidth / 2 / viewZoom || this.y + this.size + 40 < nodeY - canvasHeight / 2 / viewZoom || this.x - this.size - 40 > nodeX + canvasWidth / 2 / viewZoom || this.y - this.size - 40 > nodeY + canvasHeight / 2 / viewZoom);
+        shouldRender: function() {
+            if (0 == this.id) return 1;
+            else {
+                return !(this.x + this.size + 40 < nodeX - canvasWidth / 2 / viewZoom ||
+                this.y + this.size + 40 < nodeY - canvasHeight / 2 / viewZoom ||
+                this.x - this.size - 40 > nodeX + canvasWidth / 2 / viewZoom ||
+                this.y - this.size - 40 > nodeY + canvasHeight / 2 / viewZoom);
             }
         },
-        getStrokeColor: function () {
-            var r = (~~(parseInt(this.color.substr(1, 2), 16) * 0.9)).toString(16),
-                g = (~~(parseInt(this.color.substr(3, 2), 16) * 0.9)).toString(16),
-                b = (~~(parseInt(this.color.substr(5, 2), 16) * 0.9)).toString(16);
-            if (r.length == 1) r = "0" + r;
-            if (g.length == 1) g = "0" + g;
-            if (b.length == 1) b = "0" + b;
-            return "#" + r + g + b;
-        },
-        drawOneCell: function (ctx) {
+        drawOneCell: function(ctx) {
             if (this.shouldRender()) {
-                var b = (0 != this.id && !this.isVirus && !this.isAgitated && smoothRender > viewZoom);
-                if (10 > this.getNumPoints()) b = true;
+                var b = (0 != this.id && !this.isVirus && smoothRender > viewZoom);
+                if (10 > this.getNumPoints()) b = 1;
                 if (this.wasSimpleDrawing && !b)
                     for (var c = 0; c < this.points.length; c++) this.points[c].size = this.size;
-                var bigPointSize = this.size;
-                if (!this.wasSimpleDrawing) {
-                    for (var c = 0; c < this.points.length; c++) bigPointSize = Math.max(this.points[c].size, bigPointSize);
-                }
                 this.wasSimpleDrawing = b;
                 ctx.save();
                 this.drawTime = timestamp;
@@ -1353,20 +1480,17 @@
                 ctx.lineWidth = 10;
                 ctx.lineCap = "round";
                 ctx.lineJoin = this.isVirus ? "miter" : "round";
+                ctx.globalAlpha = transparentCells ? .5 : 1;
                 if (showColor) {
-                    ctx.fillStyle = "#FFFFFF";
-                    ctx.strokeStyle = "#AAAAAA";
+                    ctx.fillStyle = "#FFF";
+                    ctx.strokeStyle = "#AAA";
                 } else {
                     ctx.fillStyle = this.color;
-                    if (b) ctx.strokeStyle = this.getStrokeColor();
-                    else ctx.strokeStyle = this.color;
+                    ctx.strokeStyle = this.color;
                 }
-                ctx.beginPath();
                 if (b) {
-                    var lw = this.size * 0.03;
-                    ctx.lineWidth = lw;
-                    ctx.arc(this.x, this.y, this.size - lw * 0.5 + 5, 0, 2 * Math.PI, false);
-                    //ctx.stroke();
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size - (20 < this.size || !showCellBorder ? 0 : 5), 0, Math.PI * 2, 0);
                 } else {
                     this.movePoints();
                     ctx.beginPath();
@@ -1374,82 +1498,86 @@
                     ctx.moveTo(this.points[0].x, this.points[0].y);
                     for (c = 1; c <= d; ++c) {
                         var e = c % d;
-                        ctx.lineTo(this.points[e].x, this.points[e].y); //Draw circle of cell
+                        ctx.lineTo(this.points[e].x, this.points[e].y);
                     }
                 }
                 ctx.closePath();
                 var skinName = this.name.toLowerCase();
-
-                // Load Premium skin if we have one set
-                if (typeof this._skin != 'undefined' && this._skin != '') {
-                    if (this._skin[0] == '%') {
-                        skinName = this._skin.substring(1);
-                    }
+                if (skinName.indexOf('[') != -1) {
+                    var clanStart = skinName.indexOf('[');
+                    var clanEnd = skinName.indexOf(']');
+                    skinName = skinName.slice(clanStart + 1, clanEnd);
                 }
-
-                if (showSkin && skinName || skinName.startsWith("i/") != '' && -1 != knownNameDict.indexOf(skinName)) {
-                    if (!skins.hasOwnProperty(skinName)) {
-                        skins[skinName] = new Image;
-                        skins[skinName].src = SKIN_URL + skinName + '.png';
-                    } else if (skinName.startsWith("i/")) {
-                        skins[skinName] = new Image;
-                        skins[skinName].src = "https://i.imgur.com/" + this.name.split("i/")[1] + '.png';
-                    }
-                    if (0 != skins[skinName].width && skins[skinName].complete) {
-                        c = skins[skinName];
-                    } else {
-                        c = null;
-                    }
-                } else {
-                    c = null;
-                }
-                b || ctx.stroke();
-                ctx.fill(); //Draw cell content
-                if (c) {
+                if (!this.isAgitated && showSkin && teamScores == null) {
+                    if (-1 != knownNameDict.indexOf(skinName)) {
+                        if (!skins.hasOwnProperty(skinName)) {
+                            skins = new Image;
+                            skins.src = SKIN_URL + skinName + '.png';
+                        }
+                        if (0 != skins.width && skins.complete) {
+                            c = skins;
+                        } else c = null;
+                    } else c = null;
+                } else c = null;
+                c = (e = c) ? -1 != ib.indexOf(skinName) : 0;
+                if (showCellBorder) {
+                    if (!b || 20 < this.size)
+                    ctx.lineWidth = 5;
+                    ctx.stroke();
+                } else b || ctx.stroke();
+                ctx.fill();
+                if (!(null == e || c)) {
                     ctx.save();
                     ctx.clip();
-                    //Draw skin
-                    ctx.drawImage(c, this.x - bigPointSize, this.y - bigPointSize, 2 * bigPointSize, 2 * bigPointSize);
+                    ctx.drawImage(e, this.x - this.size, this.y - this.size, 2 * this.size, 2 * this.size);
                     ctx.restore();
                 }
-                if ((showColor || 15 < this.size) && !b) {
-                    ctx.strokeStyle = '#000000';
-                    ctx.globalAlpha *= .1;
-                    ctx.stroke();
+                if (showCellBorder) {
+                    if (!b || 20 < this.size) {
+                        var color = String($("#cellBorderColor").val());
+                        ctx.strokeStyle = '#' + color;
+                        if (color == '000000' || color == '000' || !color) alpha = .12;
+                        else var alpha = 1;
+                        ctx.globalAlpha *= alpha;
+                        var size = String($("#cellBorderSize").val());
+                        ctx.lineWidth = size;
+                        ctx.stroke();
+                    }
                 }
                 ctx.globalAlpha = 1;
+                if (null != e && c) ctx.drawImage(e, this.x - 2 * this.size, this.y - 2 * this.size, 4 * this.size, 4 * this.size);
                 c = -1 != playerCells.indexOf(this);
                 var ncache;
-                //draw name
+                // Draw name and score text
                 if (0 != this.id) {
-                    var x = ~~this.x,
-                        y = ~~this.y,
-                        nz = this.getNameSize(),
-                        ratio = Math.ceil(10 * viewZoom) * 0.1,
-                        ratD = 1 / ratio;
+                    var b = ~~this.y;
                     if ((showName || c) && this.name && this.nameCache && (null == e || -1 == knownNameDict_noDisp.indexOf(skinName))) {
                         ncache = this.nameCache;
                         ncache.setValue(this.name);
-                        ncache.setSize(nz);
+                        ncache.setSize(this.getNameSize());
+                        var ratio = Math.ceil(10 * viewZoom) / 10;
                         ncache.setScale(ratio);
                         var rnchache = ncache.render(),
-                            m = ~~(rnchache.width * ratD),
-                            h = ~~(rnchache.height * ratD);
-                        ctx.drawImage(rnchache, x - ~~(m * 0.5), y - ~~(h * 0.5), m, h);
-                        b += rnchache.height * 0.5 * ratio + 4;
+                            w = ~~(rnchache.width / ratio),
+                            h = ~~(rnchache.height / ratio);
+                        ctx.drawImage(rnchache, ~~this.x - ~~(w / 2), b - ~~(h / 2), w, h);
+                        b += rnchache.height / 2 / ratio + 4;
                     }
-
-                    //draw mass
                     if (showMass && (c || 0 == playerCells.length && (!this.isVirus || this.isAgitated) && 20 < this.size)) {
-                        var m = ~~(this.size * this.size * 0.01);
+                        if (null == this.sizeCache) {
+                            this.sizeCache = new UText(this.getNameSize() / 2, "#FFF", 1, "#000");
+                        }
                         c = this.sizeCache;
-                        c.setValue(m);
+                        c.setSize(this.getNameSize() / 2);
+                        c.setValue(~~(this.size * this.size / 100));
+                        ratio = Math.ceil(10 * viewZoom) / 10;
                         c.setScale(ratio);
                         e = c.render();
-                        m = ~~(e.width * ratD);
-                        h = ~~(e.height * ratD);
-                        var g = this.name ? y + ~~(h * 0.7) : y - ~~(h * 0.5);
-                        ctx.drawImage(e, x - ~~(m * 0.5), g, m, h);
+                        w = ~~(e.width / ratio);
+                        h = ~~(e.height / ratio);
+                        if (!this.name) var div = 2;
+                        else div = 3;
+                        ctx.drawImage(e, ~~this.x - ~~(w / 2), b - ~~(h / 2), w, h);
                     }
                 }
                 ctx.restore();
@@ -1458,45 +1586,45 @@
     };
     UText.prototype = {
         _value: "",
-        _color: "#000000",
-        _stroke: false,
-        _strokeColor: "#000000",
+        _color: "#000",
+        _stroke: 0,
+        _strokeColor: "#000",
         _size: 16,
         _canvas: null,
         _ctx: null,
-        _dirty: false,
+        _dirty: 0,
         _scale: 1,
-        setSize: function (a) {
+        setSize: function(a) {
             if (this._size != a) {
                 this._size = a;
-                this._dirty = true;
+                this._dirty = 1;
             }
         },
-        setScale: function (a) {
+        setScale: function(a) {
             if (this._scale != a) {
                 this._scale = a;
-                this._dirty = true;
+                this._dirty = 1;
             }
         },
-        setStrokeColor: function (a) {
+        setStrokeColor: function(a) {
             if (this._strokeColor != a) {
                 this._strokeColor = a;
-                this._dirty = true;
+                this._dirty = 1;
             }
         },
-        setValue: function (a) {
+        setValue: function(a) {
             if (a != this._value) {
                 this._value = a;
-                this._dirty = true;
+                this._dirty = 1;
             }
         },
-        render: function () {
+        render: function() {
             if (null == this._canvas) {
                 this._canvas = document.createElement("canvas");
                 this._ctx = this._canvas.getContext("2d");
             }
             if (this._dirty) {
-                this._dirty = false;
+                this._dirty = 0;
                 var canvas = this._canvas,
                     ctx = this._ctx,
                     value = this._value,
@@ -1504,31 +1632,31 @@
                     fontsize = this._size,
                     font = fontsize + 'px Ubuntu';
                 ctx.font = font;
-                var h = ~~(.2 * fontsize),
-                    wd = fontsize * 0.1;
-                var h2 = h * 0.5;
-                canvas.width = ctx.measureText(value).width * scale + 3;
+                var h = ~~(.2 * fontsize);
+                canvas.width = (ctx.measureText(value).width + 6) * scale;
                 canvas.height = (fontsize + h) * scale;
                 ctx.font = font;
+                ctx.scale(scale, scale);
                 ctx.globalAlpha = 1;
-                ctx.lineWidth = wd;
+                if (nameShadows) width = 8 * (fontsize * .014);
+                else var width = 1;
+                ctx.lineWidth = width;
                 ctx.strokeStyle = this._strokeColor;
                 ctx.fillStyle = this._color;
-                ctx.scale(scale, scale);
-                this._stroke && ctx.strokeText(value, 0, fontsize - h2);
-                ctx.fillText(value, 0, fontsize - h2);
+                this._stroke && ctx.strokeText(value, 3, fontsize - h / 2);
+                ctx.fillText(value, 3, fontsize - h / 2);
             }
-            return this._canvas
+            return this._canvas;
         },
-        getWidth: function () {
+        getWidth: function() {
             return (ctx.measureText(this._value).width + 6);
         }
     };
-    Date.now || (Date.now = function () {
-        return (new Date).getTime()
+    Date.now || (Date.now = function() {
+        return (new Date).getTime();
     });
     var Quad = {
-        init: function (args) {
+        init: function(args) {
             function Node(x, y, w, h, depth) {
                 this.x = x;
                 this.y = y;
@@ -1536,11 +1664,10 @@
                 this.h = h;
                 this.depth = depth;
                 this.items = [];
-                this.nodes = []
+                this.nodes = [];
             }
-
-            var c = args.maxChildren || 2,
-                d = args.maxDepth || 4;
+            var c = args.maxChildren || 2;
+            var d = args.maxDepth || 4;
             Node.prototype = {
                 x: 0,
                 y: 0,
@@ -1549,47 +1676,50 @@
                 depth: 0,
                 items: null,
                 nodes: null,
-                exists: function (selector) {
+                exists: function(selector) {
                     for (var i = 0; i < this.items.length; ++i) {
                         var item = this.items[i];
-                        if (item.x >= selector.x && item.y >= selector.y && item.x < selector.x + selector.w && item.y < selector.y + selector.h) return true
+                        if (item.x >= selector.x && item.y >= selector.y && item.x < selector.x + selector.w && item.y < selector.y + selector.h) return 1;
                     }
                     if (0 != this.nodes.length) {
                         var self = this;
-                        return this.findOverlappingNodes(selector, function (dir) {
-                            return self.nodes[dir].exists(selector)
-                        })
+                        return this.findOverlappingNodes(selector, function(dir) {
+                            return self.nodes[dir].exists(selector);
+                        });
                     }
-                    return false;
+                    return 0;
                 },
-                retrieve: function (item, callback) {
+                retrieve: function(item, callback) {
                     for (var i = 0; i < this.items.length; ++i) callback(this.items[i]);
                     if (0 != this.nodes.length) {
                         var self = this;
-                        this.findOverlappingNodes(item, function (dir) {
-                            self.nodes[dir].retrieve(item, callback)
-                        })
+                        this.findOverlappingNodes(item, function(dir) {
+                            self.nodes[dir].retrieve(item, callback);
+                        });
                     }
                 },
-                insert: function (a) {
+                insert: function(a) {
                     if (0 != this.nodes.length) {
                         this.nodes[this.findInsertNode(a)].insert(a);
                     } else {
                         if (this.items.length >= c && this.depth < d) {
                             this.devide();
                             this.nodes[this.findInsertNode(a)].insert(a);
-                        } else {
-                            this.items.push(a);
-                        }
+                        } else this.items.push(a);
                     }
                 },
-                findInsertNode: function (a) {
-                    return a.x < this.x + this.w / 2 ? a.y < this.y + this.h / 2 ? 0 : 2 : a.y < this.y + this.h / 2 ? 1 : 3
+                findInsertNode: function(a) {
+                    return a.x < this.x + this.w / 2 ? a.y < this.y + this.h / 2 ? 0 : 2 : a.y < this.y + this.h / 2 ? 1 : 3;
                 },
-                findOverlappingNodes: function (a, b) {
-                    return a.x < this.x + this.w / 2 && (a.y < this.y + this.h / 2 && b(0) || a.y >= this.y + this.h / 2 && b(2)) || a.x >= this.x + this.w / 2 && (a.y < this.y + this.h / 2 && b(1) || a.y >= this.y + this.h / 2 && b(3)) ? true : false
+                findOverlappingNodes: function(a, b) {
+                    return a.x < this.x + this.w / 2 &&
+                    (a.y < this.y + this.h / 2 && b(0) ||
+                    a.y >= this.y + this.h / 2 && b(2)) ||
+                    a.x >= this.x + this.w / 2 &&
+                    (a.y < this.y + this.h / 2 && b(1) ||
+                    a.y >= this.y + this.h / 2 && b(3)) ? 1 : 0;
                 },
-                devide: function () {
+                devide: function() {
                     var a = this.depth + 1,
                         c = this.w / 2,
                         d = this.h / 2;
@@ -1599,12 +1729,12 @@
                     this.nodes.push(new Node(this.x + c, this.y + d, c, d, a));
                     a = this.items;
                     this.items = [];
-                    for (c = 0; c < a.length; c++) this.insert(a[c])
+                    for (c = 0; c < a.length; c++) this.insert(a[c]);
                 },
-                clear: function () {
+                clear: function() {
                     for (var a = 0; a < this.nodes.length; a++) this.nodes[a].clear();
                     this.items.length = 0;
-                    this.nodes.length = 0
+                    this.nodes.length = 0;
                 }
             };
             var internalSelector = {
@@ -1615,79 +1745,55 @@
             };
             return {
                 root: new Node(args.minX, args.minY, args.maxX - args.minX, args.maxY - args.minY, 0),
-                insert: function (a) {
-                    this.root.insert(a)
+                insert: function(a) {
+                    this.root.insert(a);
                 },
-                retrieve: function (a, b) {
-                    this.root.retrieve(a, b)
+                retrieve: function(a, b) {
+                    this.root.retrieve(a, b);
                 },
-                retrieve2: function (a, b, c, d, callback) {
+                retrieve2: function(a, b, c, d, callback) {
                     internalSelector.x = a;
                     internalSelector.y = b;
                     internalSelector.w = c;
                     internalSelector.h = d;
-                    this.root.retrieve(internalSelector, callback)
+                    this.root.retrieve(internalSelector, callback);
                 },
-                exists: function (a) {
-                    return this.root.exists(a)
+                exists: function(a) {
+                    return this.root.exists(a);
                 },
-                clear: function () {
-                    this.root.clear()
+                clear: function() {
+                    this.root.clear();
                 }
-            }
+            };
         }
     };
-    wjQuery(function () {
+    /*wjQuery(function() {
+        // Updates favicon color based your on cell color
         function renderFavicon() {
             if (0 < playerCells.length) {
                 redCell.color = playerCells[0].color;
                 redCell.setName(playerCells[0].name);
             }
-            ctx.clearRect(0, 0, 32, 32);
-            ctx.save();
-            ctx.translate(16, 16);
-            ctx.scale(.4, .4);
-            redCell.drawOneCell(ctx);
+            ctx.clearRect(0, 0, 32, 32),
+            ctx.save(),
+            ctx.translate(16, 16),
+            ctx.scale(.4, .4),
+            redCell.drawOneCell(ctx),
             ctx.restore();
             var favicon = document.getElementById("favicon"),
                 oldfavicon = favicon.cloneNode(true);
             oldfavicon.setAttribute("href", favCanvas.toDataURL("image/png"));
-            favicon.parentNode.replaceChild(oldfavicon, favicon)
+            favicon.parentNode.replaceChild(oldfavicon, favicon);
         }
-
         var redCell = new Cell(0, 0, 0, 32, "#ED1C24", ""),
             favCanvas = document.createElement("canvas");
         favCanvas.width = 32;
         favCanvas.height = 32;
         var ctx = favCanvas.getContext("2d");
-        //renderFavicon();
-
-        // Causes stuttering..
-        //setInterval(renderFavicon, 1E3);
-
-        setInterval(drawChatBoard, 1E3);
-    });
-    wHandle.AgarTool = {
-        Cell: Cell,
-        nodes: nodes,
-        nodelist: nodelist,
-        Cells: Cells,
-        playerCells: playerCells,
-        timestamp: function () { return timestamp; },
-        redraw: redrawGameScene,
-        // Native injection helpers
-        addNode: function (node) {
-            if (!nodes.hasOwnProperty(node.id)) {
-                nodes[node.id] = node;
-                nodelist.push(node);
-            }
-        },
-        removeNode: function (nodeId) {
-            var node = nodes[nodeId];
-            if (node) {
-                node.destroy();
-            }
-        }
-    };
-    wHandle.onload = gameLoop
+        renderFavicon();
+        // NOTE: This feature causes stuttering
+        // Update icon color every 5 seconds
+        setInterval(renderFavicon, 5e3);
+    });*/
+    wHandle.onload = gameLoop;
 })(window, window.jQuery);
