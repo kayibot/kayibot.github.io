@@ -1,8 +1,8 @@
-(function(wHandle, wjQuery) {
+(function (wHandle, wjQuery) {
     /*global navigator, Image, $*/
     var CONNECTION_URL = "127.0.0.1:443"; // Default Connection IP
     var SKIN_URL = "https://agar.live/skins/"; // Skins Directory
-    wHandle.setServer = function(arg) {
+    wHandle.setServer = function (arg) {
         if (arg != gameMode) {
             CONNECTION_URL = arg;
             gameMode = arg;
@@ -12,9 +12,9 @@
     var touchable = 'createTouch' in document,
         touches = [],
         leftTouchID = -1,
-        leftTouchPos = {x: 0, y: 0},
-        leftTouchStartPos = {x: 0, y: 0},
-        leftVector = {x: 0, y: 0},
+        leftTouchPos = { x: 0, y: 0 },
+        leftTouchStartPos = { x: 0, y: 0 },
+        leftVector = { x: 0, y: 0 },
         useHttps = "https:" == wHandle.location.protocol;
     function gameLoop() {
         connecting = 1;
@@ -23,7 +23,7 @@
             chattxt;
         mainCanvas = nCanvas = document.getElementById("canvas");
         ctx = mainCanvas.getContext("2d");
-        mainCanvas.onmousemove = function(event) {
+        mainCanvas.onmousemove = function (event) {
             rawMouseX = event.clientX;
             rawMouseY = event.clientY;
             mouseCoordChange();
@@ -33,19 +33,19 @@
             mainCanvas.addEventListener('touchmove', onTouchMove, 0);
             mainCanvas.addEventListener('touchend', onTouchEnd, 0);
         }
-        mainCanvas.onmouseup = function() {};
+        mainCanvas.onmouseup = function () { };
         if (/firefox/i.test(navigator.userAgent)) {
             document.addEventListener("DOMMouseScroll", handleWheel, 0);
         } else {
             document.body.onmousewheel = handleWheel;
         }
-        mainCanvas.onfocus = function() {
+        mainCanvas.onfocus = function () {
             isTyping = 0;
         };
-        document.getElementById("chat_textbox").onblur = function() {
+        document.getElementById("chat_textbox").onblur = function () {
             isTyping = 0;
         };
-        document.getElementById("chat_textbox").onfocus = function() {
+        document.getElementById("chat_textbox").onfocus = function () {
             isTyping = 1;
         };
         var spacePressed = 0,
@@ -72,7 +72,7 @@
             bPressed = 0,
             vPressed = 0,
             nPressed = 0;
-        wHandle.onkeydown = function(event) {
+        wHandle.onkeydown = function (event) {
             if (hasOverlay) return;
             switch (event.keyCode) {
                 case 32: // SPACE key
@@ -252,7 +252,7 @@
                     break;
             }
         };
-        wHandle.onkeyup = function(event) {
+        wHandle.onkeyup = function (event) {
             switch (event.keyCode) {
                 case 32:
                     spacePressed = 0;
@@ -331,7 +331,7 @@
                     break;
             }
         };
-        wHandle.onblur = function() {
+        wHandle.onblur = function () {
             sendUint8(19);
             spacePressed = 0;
             qPressed = 0;
@@ -483,7 +483,7 @@
             ws.onclose = null;
             try {
                 ws.close();
-            } catch (b) {}
+            } catch (b) { }
             ws = null;
         }
         wsUrl = (useHttps ? "wss://" : "ws://") + CONNECTION_URL;
@@ -495,7 +495,7 @@
         leaderBoard = [];
         mainCanvas = teamScores = null;
         userScore = 0;
-        wsUrl = "wss://ffa3.agar.live";
+        // wsUrl = "wss://ffa3.agar.live";
         console.log("Connecting to " + wsUrl);
         ws = new WebSocket(wsUrl);
         ws.binaryType = "arraybuffer";
@@ -509,6 +509,7 @@
     function wsSend(a) {
         ws.send(a.buffer);
     }
+    const RECAPTCHA_SITE_KEY = '6LcnrKQUAAAAADohV5Cksikz89WSP-ZPHNA7ViZm';
     function onWsOpen() {
         var msg;
         console.log("Socket open");
@@ -516,16 +517,80 @@
         wjQuery("#connecting").hide();
         msg = prepareData(5);
         msg.setUint8(0, 254);
-        msg.setUint32(1, 4, true); // Protcol 5
+        msg.setUint32(1, 4, true); // Protcol 4
         wsSend(msg);
+
         msg = prepareData(5);
         msg.setUint8(0, 255);
-        msg.setUint32(1, 1332175218, 1);
+        msg.setUint32(1, 0x4f676172, 1);
         wsSend(msg);
+
+
+        waitForRecaptcha(() => {
+            window.grecaptcha.ready(() => {
+                window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: 'play_game' }).then(token => {
+                    sendRecaptcha(ws, token);
+                    startHeartbeat(ws); // Keep this helper
+                    sendSpectate(ws);
+                });
+            });
+        });
+
+
+
+
+        // startHeartbeat(ws);
+
+        // setTimeout(() => {
+        //     if (ws.readyState !== WebSocket.OPEN) {
+        //         console.log(`[Bot] WebSocket not open, cannot spawn`);
+        //         return;
+        //     }
+        //     else {
+        //         console.log(`[Bot] WebSocket open, spawning`);
+        //         const randomName = 'KayiBotX' + Math.floor(Math.random() * 10000);
+        //         sendSpawn(ws, randomName);
+        //     }
+        //     //startRandomChat(ws);
+        // }, 1000); // Reduced delay to 100ms
+
         sendNickName();
     }
+
+    function sendSpectate(ws) {
+        const buf = createBuffer(1);
+        buf.setUint8(0, 1);
+        ws.send(buf.buffer);
+    }
+
+    function sendRecaptcha(ws, token) {
+        const buf = createBuffer(1 + 2 * token.length);
+        buf.setUint8(0, 50); // 0x32
+        for (let i = 0; i < token.length; i++) {
+            buf.setUint16(1 + i * 2, token.charCodeAt(i), true);
+        }
+        ws.send(buf.buffer);
+    }
+
+
+    function waitForRecaptcha(cb) {
+        if (window.grecaptcha) cb();
+        else setTimeout(() => waitForRecaptcha(cb), 1000);
+    }
+
+    function startHeartbeat(ws) {
+        setInterval(function () {
+            if (ws.readyState === WebSocket.OPEN) {
+                const buf = createBuffer(5);
+                buf.setUint8(0, 90);
+                buf.setUint32(1, 123456789, true);
+                ws.send(buf.buffer);
+            }
+        }, 1000);
+    }
+
     function onWsClose() {
-        setTimeout(showConnecting, delay);
+        // setTimeout(showConnecting, delay);
         console.log("Socket closed");
         delay *= 1.5;
     }
@@ -712,7 +777,7 @@
                 killedNode.updateTime = timestamp;
             }
         }
-        for (var i = 0;;) {
+        for (var i = 0; ;) {
             var nodeid = view.getUint32(offset, 1);
             offset += 4;
             if (0 == nodeid) break;
@@ -732,14 +797,14 @@
                 _skin = "";
             flags & 2 && (offset += 4);
             if (flags & 4) {
-                for (;;) { // Skin name
+                for (; ;) { // Skin name
                     var t = view.getUint8(offset, 1) & 0x7F;
                     offset += 1;
                     if (0 == t) break;
                     _skin += String.fromCharCode(t);
                 }
             }
-            for (var char, name = "";;) { // Nick name
+            for (var char, name = ""; ;) { // Nick name
                 char = view.getUint16(offset, 1);
                 offset += 2;
                 if (0 == char) break;
@@ -808,10 +873,32 @@
     function sendNickName() {
         if (wsIsOpen() && null != userNickName) {
             var msg = prepareData(1 + 2 * userNickName.length);
-            msg.setUint8(0, 0);
-            for (var i = 0; i < userNickName.length; ++i) msg.setUint16(1 + 2 * i, userNickName.charCodeAt(i), 1);
+            msg.setUint8(0, 107);
+            for (var i = 0; i < userNickName.length; ++i) msg.setUint16(1 + i * 2, userNickName.charCodeAt(i), true);
             wsSend(msg);
+
+            setTimeout(function () {
+                sendMouseMove(ws, 0, 0);
+            }, 100);
+
         }
+    }
+
+    // function sendMouseMove(ws, x, y) {
+    //     if (wsIsOpen()) {
+    //         const buf = createBuffer(13);
+    //         buf.setUint8(0, 16); // Opcode 16 = Mouse Move
+    //         buf.setInt32(1, x, true); // X position
+    //         buf.setInt32(5, y, true); // Y position
+    //         buf.setUint32(9, 0, true); // Unknown/padding
+    //         ws.send(buf.buffer);
+    //         //console.log('[Bot] Sent Mouse Move: (' + x + ', ' + y + ')');
+    //     }
+    // }
+
+
+    function createBuffer(size) {
+        return new DataView(new ArrayBuffer(size));
     }
     function sendChat(str) {
         if (wsIsOpen() && (str.length < 200) && (str.length > 0) && !hideChat) {
@@ -899,7 +986,7 @@
         } else {
             drawGrid();
         }
-        nodelist.sort(function(a, b) {
+        nodelist.sort(function (a, b) {
             return a.size == b.size ? a.id - b.id : a.size - b.size;
         });
         ctx.save();
@@ -1214,71 +1301,71 @@
     splitIcon.src = "assets/img/split.png";
     ejectIcon.src = "assets/img/feed.png";
     wHandle.isSpectating = 0;
-    wHandle.setNick = function(arg) {
+    wHandle.setNick = function (arg) {
         hideOverlays();
         userNickName = arg;
         sendNickName();
         userScore = 0;
     };
-    wHandle.setSkins = function(arg) {
+    wHandle.setSkins = function (arg) {
         showSkin = arg;
     };
-    wHandle.setNames = function(arg) {
+    wHandle.setNames = function (arg) {
         showName = arg;
     };
-    wHandle.setCellBorder = function(arg) {
+    wHandle.setCellBorder = function (arg) {
         showCellBorder = arg;
     };
     wHandle.setCellPos = function (arg) {
         showPosition = arg;
     };
-    wHandle.setDarkTheme = function(arg) {
+    wHandle.setDarkTheme = function (arg) {
         showDarkTheme = arg;
     };
-    wHandle.setColors = function(arg) {
+    wHandle.setColors = function (arg) {
         showColor = arg;
     };
-    wHandle.setShowMass = function(arg) {
+    wHandle.setShowMass = function (arg) {
         showMass = arg;
     };
-    wHandle.setSmooth = function(arg) {
+    wHandle.setSmooth = function (arg) {
         smoothRender = arg ? 2 : 0;
     };
-    wHandle.setMapBorders = function(arg) {
+    wHandle.setMapBorders = function (arg) {
         showBorders = arg;
     };
-    wHandle.setMapSectors = function(arg) {
+    wHandle.setMapSectors = function (arg) {
         showSectors = arg;
     };
-    wHandle.setNameShadows = function(arg) {
+    wHandle.setNameShadows = function (arg) {
         nameShadows = arg;
     };
-    wHandle.setZoom = function(arg) {
+    wHandle.setZoom = function (arg) {
         infiniteZoom = arg;
     };
-    wHandle.setChatHide = function(arg) {
+    wHandle.setChatHide = function (arg) {
         hideChat = arg;
         hideChat ? wjQuery('#chat_textbox').hide() : wjQuery('#chat_textbox').show();
     };
-    wHandle.setMapGrid = function(arg) {
+    wHandle.setMapGrid = function (arg) {
         showGrid = arg;
     };
-    wHandle.setTransparent = function(arg) {
+    wHandle.setTransparent = function (arg) {
         transparentCells = arg;
     };
-    wHandle.spectate = function() {
+    wHandle.spectate = function () {
         userNickName = null;
         wHandle.isSpectating = 1;
         sendUint8(1);
         hideOverlays();
     };
-    wHandle.setGameMode = function(arg) {
+    wHandle.setGameMode = function (arg) {
         if (arg != gameMode) {
             gameMode = arg;
             showConnecting();
         }
     };
-    wHandle.setAcid = function(arg) {
+    wHandle.setAcid = function (arg) {
         acidMode = arg;
     };
     if (null != wHandle.localStorage) {
@@ -1288,7 +1375,7 @@
         Ra = +wHandle.localStorage.AB8;
         wHandle.ABGroup = Ra;
     }
-    setTimeout(function() {}, 3E5);
+    setTimeout(function () { }, 3E5);
     var T = {
         ZW: "EU-London"
     };
@@ -1329,7 +1416,7 @@
         isVirus: 0,
         isAgitated: 0,
         wasSimpleDrawing: 1,
-        destroy: function() {
+        destroy: function () {
             var tmp;
             for (tmp = 0; tmp < nodelist.length; tmp++)
                 if (nodelist[tmp] == this) {
@@ -1349,10 +1436,10 @@
             this.destroyed = 1;
             Cells.push(this);
         },
-        getNameSize: function() {
+        getNameSize: function () {
             return Math.max(~~(this.size / 3.2), 2);
         },
-        setName: function(a) {
+        setName: function (a) {
             this.name = a;
             if (null == this.nameCache) {
                 var nameColor = String($("#nameColor").val());
@@ -1363,7 +1450,7 @@
                 this.nameCache.setValue(this.name);
             }
         },
-        createPoints: function() {
+        createPoints: function () {
             for (var samplenum = this.getNumPoints(); this.points.length > samplenum;) {
                 var rand = ~~(Math.random() * this.points.length);
                 this.points.splice(rand, 1);
@@ -1390,18 +1477,18 @@
                 this.pointsAcc.splice(rand2, 0, this.pointsAcc[rand2]);
             }
         },
-        getNumPoints: function() {
+        getNumPoints: function () {
             if (0 == this.id) return 16;
             var a = 10;
             if (20 > this.size) a = 0;
             if (this.isVirus) a = 30;
             var b = this.size;
-            if (!this.isVirus)(b *= viewZoom);
+            if (!this.isVirus) (b *= viewZoom);
             b *= z;
-            if (this.flag & 32)(b *= .25);
+            if (this.flag & 32) (b *= .25);
             return ~~Math.max(b, a);
         },
-        movePoints: function() {
+        movePoints: function () {
             this.createPoints();
             for (var points = this.points, pointsacc = this.pointsAcc, numpoints = points.length, i = 0; i < numpoints; ++i) {
                 var pos1 = pointsacc[(i - 1 + numpoints) % numpoints],
@@ -1419,7 +1506,7 @@
                     var l = 0,
                         n = points[j].x,
                         q = points[j].y;
-                    qTree.retrieve2(n - 5, q - 5, 10, 10, function(a) {
+                    qTree.retrieve2(n - 5, q - 5, 10, 10, function (a) {
                         if (a.ref != ref && 25 > (n - a.x) * (n - a.x) + (q - a.y) * (q - a.y)) {
                             l = 1;
                         }
@@ -1443,7 +1530,7 @@
                 points[j].y = this.y + Math.sin(e * j + isvirus) * m;
             }
         },
-        updatePos: function() {
+        updatePos: function () {
             if (0 == this.id) return 1;
             var a;
             a = (timestamp - this.updateTime) / 120;
@@ -1457,16 +1544,16 @@
             this.size = b * (this.nSize - this.oSize) + this.oSize;
             return b;
         },
-        shouldRender: function() {
+        shouldRender: function () {
             if (0 == this.id) return 1;
             else {
                 return !(this.x + this.size + 40 < nodeX - canvasWidth / 2 / viewZoom ||
-                this.y + this.size + 40 < nodeY - canvasHeight / 2 / viewZoom ||
-                this.x - this.size - 40 > nodeX + canvasWidth / 2 / viewZoom ||
-                this.y - this.size - 40 > nodeY + canvasHeight / 2 / viewZoom);
+                    this.y + this.size + 40 < nodeY - canvasHeight / 2 / viewZoom ||
+                    this.x - this.size - 40 > nodeX + canvasWidth / 2 / viewZoom ||
+                    this.y - this.size - 40 > nodeY + canvasHeight / 2 / viewZoom);
             }
         },
-        drawOneCell: function(ctx) {
+        drawOneCell: function (ctx) {
             if (this.shouldRender()) {
                 var b = (0 != this.id && !this.isVirus && smoothRender > viewZoom);
                 if (10 > this.getNumPoints()) b = 1;
@@ -1522,7 +1609,7 @@
                 c = (e = c) ? -1 != ib.indexOf(skinName) : 0;
                 if (showCellBorder) {
                     if (!b || 20 < this.size)
-                    ctx.lineWidth = 5;
+                        ctx.lineWidth = 5;
                     ctx.stroke();
                 } else b || ctx.stroke();
                 ctx.fill();
@@ -1594,31 +1681,31 @@
         _ctx: null,
         _dirty: 0,
         _scale: 1,
-        setSize: function(a) {
+        setSize: function (a) {
             if (this._size != a) {
                 this._size = a;
                 this._dirty = 1;
             }
         },
-        setScale: function(a) {
+        setScale: function (a) {
             if (this._scale != a) {
                 this._scale = a;
                 this._dirty = 1;
             }
         },
-        setStrokeColor: function(a) {
+        setStrokeColor: function (a) {
             if (this._strokeColor != a) {
                 this._strokeColor = a;
                 this._dirty = 1;
             }
         },
-        setValue: function(a) {
+        setValue: function (a) {
             if (a != this._value) {
                 this._value = a;
                 this._dirty = 1;
             }
         },
-        render: function() {
+        render: function () {
             if (null == this._canvas) {
                 this._canvas = document.createElement("canvas");
                 this._ctx = this._canvas.getContext("2d");
@@ -1648,15 +1735,15 @@
             }
             return this._canvas;
         },
-        getWidth: function() {
+        getWidth: function () {
             return (ctx.measureText(this._value).width + 6);
         }
     };
-    Date.now || (Date.now = function() {
+    Date.now || (Date.now = function () {
         return (new Date).getTime();
     });
     var Quad = {
-        init: function(args) {
+        init: function (args) {
             function Node(x, y, w, h, depth) {
                 this.x = x;
                 this.y = y;
@@ -1676,29 +1763,29 @@
                 depth: 0,
                 items: null,
                 nodes: null,
-                exists: function(selector) {
+                exists: function (selector) {
                     for (var i = 0; i < this.items.length; ++i) {
                         var item = this.items[i];
                         if (item.x >= selector.x && item.y >= selector.y && item.x < selector.x + selector.w && item.y < selector.y + selector.h) return 1;
                     }
                     if (0 != this.nodes.length) {
                         var self = this;
-                        return this.findOverlappingNodes(selector, function(dir) {
+                        return this.findOverlappingNodes(selector, function (dir) {
                             return self.nodes[dir].exists(selector);
                         });
                     }
                     return 0;
                 },
-                retrieve: function(item, callback) {
+                retrieve: function (item, callback) {
                     for (var i = 0; i < this.items.length; ++i) callback(this.items[i]);
                     if (0 != this.nodes.length) {
                         var self = this;
-                        this.findOverlappingNodes(item, function(dir) {
+                        this.findOverlappingNodes(item, function (dir) {
                             self.nodes[dir].retrieve(item, callback);
                         });
                     }
                 },
-                insert: function(a) {
+                insert: function (a) {
                     if (0 != this.nodes.length) {
                         this.nodes[this.findInsertNode(a)].insert(a);
                     } else {
@@ -1708,18 +1795,18 @@
                         } else this.items.push(a);
                     }
                 },
-                findInsertNode: function(a) {
+                findInsertNode: function (a) {
                     return a.x < this.x + this.w / 2 ? a.y < this.y + this.h / 2 ? 0 : 2 : a.y < this.y + this.h / 2 ? 1 : 3;
                 },
-                findOverlappingNodes: function(a, b) {
+                findOverlappingNodes: function (a, b) {
                     return a.x < this.x + this.w / 2 &&
-                    (a.y < this.y + this.h / 2 && b(0) ||
-                    a.y >= this.y + this.h / 2 && b(2)) ||
-                    a.x >= this.x + this.w / 2 &&
-                    (a.y < this.y + this.h / 2 && b(1) ||
-                    a.y >= this.y + this.h / 2 && b(3)) ? 1 : 0;
+                        (a.y < this.y + this.h / 2 && b(0) ||
+                            a.y >= this.y + this.h / 2 && b(2)) ||
+                        a.x >= this.x + this.w / 2 &&
+                        (a.y < this.y + this.h / 2 && b(1) ||
+                            a.y >= this.y + this.h / 2 && b(3)) ? 1 : 0;
                 },
-                devide: function() {
+                devide: function () {
                     var a = this.depth + 1,
                         c = this.w / 2,
                         d = this.h / 2;
@@ -1731,7 +1818,7 @@
                     this.items = [];
                     for (c = 0; c < a.length; c++) this.insert(a[c]);
                 },
-                clear: function() {
+                clear: function () {
                     for (var a = 0; a < this.nodes.length; a++) this.nodes[a].clear();
                     this.items.length = 0;
                     this.nodes.length = 0;
@@ -1745,23 +1832,23 @@
             };
             return {
                 root: new Node(args.minX, args.minY, args.maxX - args.minX, args.maxY - args.minY, 0),
-                insert: function(a) {
+                insert: function (a) {
                     this.root.insert(a);
                 },
-                retrieve: function(a, b) {
+                retrieve: function (a, b) {
                     this.root.retrieve(a, b);
                 },
-                retrieve2: function(a, b, c, d, callback) {
+                retrieve2: function (a, b, c, d, callback) {
                     internalSelector.x = a;
                     internalSelector.y = b;
                     internalSelector.w = c;
                     internalSelector.h = d;
                     this.root.retrieve(internalSelector, callback);
                 },
-                exists: function(a) {
+                exists: function (a) {
                     return this.root.exists(a);
                 },
-                clear: function() {
+                clear: function () {
                     this.root.clear();
                 }
             };
