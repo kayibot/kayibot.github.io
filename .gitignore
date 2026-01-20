@@ -1,0 +1,15 @@
+**/script_raw.js
+**/settings.txt
+**/ws-proxy.js
+**/node_modules
+**/package-lock.json
+**/package.json
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+dist/
+build/
+out/

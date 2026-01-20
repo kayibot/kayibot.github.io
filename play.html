@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="KayiBotX izleme">
+    <meta name="keywords"
+        content="agario, agar, io, cell, cells, virus,kayibotx,kayibot, blob, game, games, web game, html5, fun, flash">
+    <meta name="robots" content="index, follow">
+    <meta name="viewport"
+        content="minimal-ui, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>KayiBotX</title>
+    <link id="favicon" rel="icon" type="image/png" href="assets/img/facio.png" />
+    <link href="assets/css/fonts.googleapis.css" rel='stylesheet' type='text/css'>
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/index.css" rel="stylesheet">
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/vector.js"></script>
+    <!-- <script src="assets/js/script.js"></script>   -->
+    <script src="assets/js/script_raw.js"></script>
+    <script>
+        window.addEventListener('keydown', keydown);
+        function keydown(event) {
+            if (event.keyCode == 16) {
+                for (var shift = 0; shift < 5; shift++) setTimeout(split, shift * 50);
+            }
+            if (event.keyCode == 65) {
+                for (var i = 0; i < 3; i++) setTimeout(split, i * 50);
+            }
+            if (event.keyCode == 68) {
+                split();
+                setTimeout(split, 50);
+            }
+        } /*global $*/
+        function split() {
+            $("body").trigger($.Event("keydown", {
+                keyCode: 32
+            }));
+            $("body").trigger($.Event("keyup", {
+                keyCode: 32
+            }));
+            $("body").trigger($.Event("keyup", {
+                keyCode: 32
+            }));
+            $("body").trigger($.Event("keyup", {
+                keyCode: 32
+            }));
+        }
+    </script>
+</head>
+
+<body>
+    <div id="overlays">
+        <div id="helloDialog">
+            <form role="form">
+                <div class="form-group">
+                    <center>
+                        <h2 id="title">KayiBotX</h2>
+                    </center>
+                </div>
+                <div class="form-group"> <input id="nick" class="form-control" style="margin-bottom: 10px;"
+                        placeholder="Nick" maxlength="30" />
+                    <select id="gamemode" class="form-control" style="margin-bottom: 10px;"
+                        onchange="setServer($(this).val())" required>
+                        <option selected disabled>Select:</option>
+                        <option value="wss://ffa1.agar.live">FFA 1 - Classic</option>
+                        <option value="wss://ffa2.agar.live">FFA 2 - Fast</option>
+                        <option value="wss://ffa3.agar.live">FFA 3 - Crazy</option>
+                        <option value="wss://pop1.agar.live">Virus Bomb 1</option>
+                        <option value="wss://pop2.agar.live">Virus Bomb 2</option>
+                        <option value="wss://ffa4.agar.live">Crazy Bomb 3</option>
+
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" id="play-btn" style="width: 100%"
+                        onclick="setNick(document.getElementById('nick').value); return false;"
+                        class="btn btn-play btn-primary btn-needs-server">Play</button>
+                    <br><br />
+                    <button id="spectate-btn" onclick="spectate(); return false;" style="width: 100%"
+                        class="btn btn-warning btn-spectate btn-needs-server">Spectate
+                    </button>
+                </div>
+                <div id="leftOptions">
+                    <div style="margin: 6px;">
+                        <center>
+                            <h3>Settings</h3>
+                        </center>
+                        <label><input type="checkbox" onchange="setShowSkins(!$(this).is(':checked'));"> Hide
+                            Skins</label>
+                        <label><input type="checkbox" onchange="setNames(!$(this).is(':checked'));"> Hide Names</label>
+                        <label><input type="checkbox" onchange="setDarkTheme($(this).is(':checked')); checked"> Dark
+                            Theme</label>
+                        <label><input type="checkbox" onchange="setColors($(this).is(':checked'));"> No Colors</label>
+                        <label><input type="checkbox" onchange="setShowMass($(this).is(':checked'));"> Show Mass</label>
+                        <label><input type="checkbox" onchange="setSmooth($(this).is(':checked'));" checked> Smooth
+                            Render</label>
+                        <label><input type="checkbox" onchange="setChatHide($(this).is(':checked'));"> Hide Chat</label>
+
+                        <label><input type="checkbox" onchange="setNameShadows($(this).is(':checked'));"> Name
+                            Shadows</label>
+                        <label><input type="checkbox" onchange="setTransparent($(this).is(':checked'));">
+                            Transparent</label>
+                        <label><input type="checkbox" onchange="setFocus($(this).is(':checked'));"> Focus Mode
+                            (Rainbow)</label>
+
+                        <br />
+
+                    </div>
+                </div>
+                <div id="rightOptions">
+                    <div style="margin: 6px;">
+                        <center>
+                            <h3>Skin</h3>
+                        </center>
+                        <div style="text-align: center;">
+                            <div
+                                style="width: 120px; height: 120px; border: 3px solid #ddd; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; margin: 15px 0; background: #f5f5f5; overflow: hidden;">
+                                <img id="selectedSkinPreview" src="https://agar.live/skins/noskin.png" alt=""
+                                    style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                            </div>
+                            <br>
+                            <button type="button" onclick="openSkinModal(); return false;" class="btn btn-primary"
+                                style="width: 100%; margin-top: 10px;">Change Skin</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div id="instructions">
+                <hr />
+                <center>
+                    <span class="text-muted">
+                        <a href="https://kayibot.github.io/">KayiBotX</a>
+                    </span>
+                </center>
+                <hr />
+
+            </div>
+        </div>
+    </div>
+
+    </div> <canvas id="canvas" width="800" height="600"></canvas> <input type="text" id="chat_textbox"
+        placeholder="Press enter to chat" maxlength="200" />
+    <div style="font-family:'Ubuntu'">&nbsp;</div>
+
+    <script src="https://www.google.com/recaptcha/api.js?render=6LcnrKQUAAAAADohV5Cksikz89WSP-ZPHNA7ViZm"></script>
+    <div>
+        <div class="grecaptcha-badge" data-style="bottomright"
+            style="width: 256px; height: 60px; display: block; transition: right 0.3s; position: fixed; bottom: 14px; right: -186px; box-shadow: gray 0px 0px 5px; border-radius: 2px; overflow: hidden;">
+            <div class="grecaptcha-logo"><iframe title="reCAPTCHA" width="256" height="60" role="presentation"
+                    name="a-b9geydpzzlae" frameborder="0" scrolling="no"
+                    sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation allow-modals allow-popups-to-escape-sandbox allow-storage-access-by-user-activation"
+                    src="https://www.google.com/recaptcha/api2/anchor?ar=1&amp;k=6LcnrKQUAAAAADohV5Cksikz89WSP-ZPHNA7ViZm&amp;co=aHR0cHM6Ly9hZ2FyLmxpdmU6NDQz&amp;hl=tr&amp;v=9TiwnJFHeuIw_s0wSd3fiKfN&amp;size=invisible&amp;anchor-ms=20000&amp;execute-ms=30000&amp;cb=ao1a9iefc8pa"></iframe>
+            </div>
+            <div class="grecaptcha-error"></div><textarea id="g-recaptcha-response-100000" name="g-recaptcha-response"
+                class="g-recaptcha-response"
+                style="width: 250px; height: 40px; border: 1px solid rgb(193, 193, 193); margin: 10px 25px; padding: 0px; resize: none; display: none;"></textarea>
+        </div><iframe style="display: none;"></iframe>
+    </div>
+
+
+    <!-- Skin Modal -->
+    <div id="skinModal"
+        style="display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); justify-content: center; align-items: center;">
+        <div
+            style="border-radius: 12px; padding: 30px; max-width: 800px; width: 90%; max-height: 80vh; overflow-y: auto; position: relative; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
+            <span onclick="closeSkinModal()"
+                style="position: absolute; top: 15px; right: 20px; font-size: 30px; font-weight: bold; color: #999; cursor: pointer;">&times;</span>
+            <h3 style="color: #5cb85c; margin-bottom: 25px; font-size: 28px; text-align: center;">Select Your Skin</h3>
+            <div id="skinGrid"
+                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 15px; margin-top: 20px;">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate 600 skins dynamically
+        function generateSkinList() {
+            const skinGrid = document.getElementById('skinGrid');
+
+            // Add "No Skin" option first
+            const noSkinImg = document.createElement('img');
+            noSkinImg.className = 'skin_img';
+            noSkinImg.src = 'https://agar.live/skins/noskin.png';
+            noSkinImg.style.width = '80px';
+            noSkinImg.style.height = '80px';
+            noSkinImg.style.border = '2px solid #e0e0e0';
+            noSkinImg.style.borderRadius = '50%';
+            noSkinImg.style.cursor = 'pointer';
+            noSkinImg.style.transition = 'all 0.3s ease';
+            noSkinImg.style.objectFit = 'contain';
+            noSkinImg.style.background = '#f9f9f9';
+            noSkinImg.onclick = function () {
+                setSkinListClick(null);
+            };
+            noSkinImg.onmouseover = function () {
+                this.style.transform = 'scale(1.1)';
+                this.style.borderColor = '#5cb85c';
+                this.style.boxShadow = '0 5px 15px rgba(92, 184, 92, 0.4)';
+            };
+            noSkinImg.onmouseout = function () {
+                this.style.transform = 'scale(1)';
+                this.style.borderColor = '#e0e0e0';
+                this.style.boxShadow = 'none';
+            };
+            skinGrid.appendChild(noSkinImg);
+
+            // Add numbered skins
+            for (let i = 1; i <= 600; i++) {
+                const img = document.createElement('img');
+                img.className = 'skin_img';
+                img.src = 'https://agar.live/skins/' + i + '.png';
+                img.rel = i - 2;
+                img.style.width = '80px';
+                img.style.height = '80px';
+                img.style.border = '2px solid #e0e0e0';
+                img.style.borderRadius = '50%';
+                img.style.cursor = 'pointer';
+                img.style.transition = 'all 0.3s ease';
+                img.style.objectFit = 'contain';
+                img.style.background = '#f9f9f9';
+                img.onclick = function () {
+                    setSkinListClick(i);
+                };
+                img.onmouseover = function () {
+                    this.style.transform = 'scale(1.1)';
+                    this.style.borderColor = '#5cb85c';
+                    this.style.boxShadow = '0 5px 15px rgba(92, 184, 92, 0.4)';
+                };
+                img.onmouseout = function () {
+                    this.style.transform = 'scale(1)';
+                    this.style.borderColor = '#e0e0e0';
+                    this.style.boxShadow = 'none';
+                };
+                img.onerror = function () {
+                    this.remove();
+                };
+                skinGrid.appendChild(img);
+            }
+        }
+
+        function setSkinListClick(id) {
+            console.log('Selected skin ID:', id);
+            const preview = document.getElementById('selectedSkinPreview');
+            if (id === null || id === undefined) {
+                preview.src = 'https://agar.live/skins/noskin.png';
+                localStorage.removeItem('selectedSkin');
+            } else {
+                preview.src = 'https://agar.live/skins/' + id + '.png';
+                localStorage.setItem('selectedSkin', id);
+            }
+            closeSkinModal();
+        }
+
+        function openSkinModal() {
+            document.getElementById('skinModal').style.display = 'flex';
+        }
+
+        function closeSkinModal() {
+            document.getElementById('skinModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function (event) {
+            const modal = document.getElementById('skinModal');
+            if (event.target === modal) {
+                closeSkinModal();
+            }
+        }
+
+        // Initialize skin grid on page load
+        window.addEventListener('load', function () {
+            generateSkinList();
+
+            // Load saved skin from localStorage
+            const savedSkin = localStorage.getItem('selectedSkin');
+            if (savedSkin) {
+                const preview = document.getElementById('selectedSkinPreview');
+                preview.src = 'https://agar.live/skins/' + savedSkin + '.png';
+                console.log('Loaded saved skin:', savedSkin);
+            }
+        });
+    </script>
+
+
+
+    <veepn-intro-offer>
+        <style>
+            @font-face {
+                font-family: FigtreeVF;
+                src: url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) format("woff2 supports variations"), url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) format("woff2-variations");
+                font-weight: 100 1000;
+                font-display: swap
+            }
+        </style>
+    </veepn-intro-offer>
+
+</body>
+
+</html>
