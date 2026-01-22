@@ -26,25 +26,21 @@
     <script>
         window.addEventListener('keydown', keydown);
         function keydown(event) {
-            if (event.keyCode == 16) {
+            if (event.keyCode == 17) {
                 for (var shift = 0; shift < 5; shift++) setTimeout(split, shift * 50);
             }
-            if (event.keyCode == 65) {
-                for (var i = 0; i < 3; i++) setTimeout(split, i * 50);
-            }
-            if (event.keyCode == 68) {
-                split();
-                setTimeout(split, 50);
-            }
-        } /*global $*/
+            // if (event.keyCode == 65) {
+            //     for (var i = 0; i < 3; i++) setTimeout(split, i * 50);
+            // }
+            // if (event.keyCode == 68) {
+            //     split();
+            //     setTimeout(split, 50);
+            // }
+        } 
+        
+        // /*global $*/
         function split() {
             $("body").trigger($.Event("keydown", {
-                keyCode: 32
-            }));
-            $("body").trigger($.Event("keyup", {
-                keyCode: 32
-            }));
-            $("body").trigger($.Event("keyup", {
                 keyCode: 32
             }));
             $("body").trigger($.Event("keyup", {
