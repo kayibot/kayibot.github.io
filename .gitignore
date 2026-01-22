@@ -1,6 +1,9 @@
 **/script_raw.js
+**/ws-spam.js
 **/settings.txt
+**/proxy.txt
 **/ws-proxy.js
+**/create_license.html
 **/node_modules
 **/package-lock.json
 **/package.json
