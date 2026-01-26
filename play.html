@@ -84,23 +84,24 @@
                         <!-- <label><input type="checkbox" id="c_showSkin" onchange="setShowSkins(!$(this).is(':checked'));"> Hide Skins</label> -->
                         <!-- <label><input type="checkbox" id="c_showName" onchange="setNames(!$(this).is(':checked'));"> Hide Names</label> -->
                         <label><input type="checkbox" id="c_showDarkTheme" onchange="setDarkTheme($(this).is(':checked')); checked"> Dark Theme</label>
-                        <label><input type="checkbox" id="c_showColor" onchange="setColors($(this).is(':checked'));"> No Colors</label>
-                        <label><input type="checkbox" id="c_showMass" onchange="setShowMass($(this).is(':checked'));">Show Mass</label>
+                        <!-- <label><input type="checkbox" id="c_showColor" onchange="setColors($(this).is(':checked'));"> No Colors</label> -->
+                        <!-- <label><input type="checkbox" id="c_showMass" onchange="setShowMass($(this).is(':checked'));">Show Mass</label> -->
                         <!-- <label><input type="checkbox" id="c_smoothRender" onchange="setSmooth($(this).is(':checked'));" checked> Smooth Render</label> -->
                         <label><input type="checkbox" id="c_hideChat" onchange="setChatHide($(this).is(':checked'));">Hide Chat</label>
                         <label><input type="checkbox" id="c_transparentCells" onchange="setTransparent($(this).is(':checked'));">Transparent</label>
-                        <label><input type="checkbox" id="c_focusMode" onchange="setFocus($(this).is(':checked'));"> Focus Mode (Rainbow)</label>
+                        <label><input type="checkbox" id="c_focusMode" onchange="setFocus($(this).is(':checked'));"> Focus Mode (G)</label>
 
                         <label><input type="checkbox" id="c_frFastRender"
-                                onchange="setFrFastRender($(this).is(':checked')); if($(this).is(':checked')) {$('#perfSubOptions').slideDown(); setFrHideNames(true); $('#c_frHideNames').prop('checked', true); setFrHideMass(true); $('#c_frHideMass').prop('checked', true); setFrHideSkins(true); $('#c_frHideSkins').prop('checked', true); setFrSimpleVirus(true); $('#c_frSimpleVirus').prop('checked', true);} else {$('#perfSubOptions').slideUp(); setFrHideNames(false); $('#c_frHideNames').prop('checked', false); setFrHideMass(false); $('#c_frHideMass').prop('checked', false); setFrHideSkins(false); $('#c_frHideSkins').prop('checked', false); setFrSimpleVirus(false); $('#c_frSimpleVirus').prop('checked', false);}">
+                                onchange="setFrFastRender($(this).is(':checked')); if($(this).is(':checked')) {/*$('#perfSubOptions').slideDown();*/ setFrHideNames(true); $('#c_frHideNames').prop('checked', true); setFrHideMass(true); $('#c_frHideMass').prop('checked', true); setFrHideSkins(true); $('#c_frHideSkins').prop('checked', true); setFrSimpleVirus(true); $('#c_frSimpleVirus').prop('checked', true);} else {/*$('#perfSubOptions').slideUp();*/ setFrHideNames(false); $('#c_frHideNames').prop('checked', false); setFrHideMass(false); $('#c_frHideMass').prop('checked', false); setFrHideSkins(false); $('#c_frHideSkins').prop('checked', false); setFrSimpleVirus(false); $('#c_frSimpleVirus').prop('checked', false);}">
                             Performance
                             Mode</label>
 
-                        <div id="perfSubOptions" style="display:none; margin-left: 20px; font-size: 0.9em; border-left: 2px solid #5cb85c; padding-left: 8px;">
-                            <label><input type="checkbox" id="c_frHideNames" onchange="setFrHideNames($(this).is(':checked'));">Hide Names(F)</label>
-                            <label><input type="checkbox" id="c_frHideMass" onchange="setFrHideMass($(this).is(':checked'));" >Hide Mass</label>
-                            <label><input type="checkbox" id="c_frHideSkins" onchange="setFrHideSkins($(this).is(':checked'));" >Hide Skins</label>
-                            <label><input type="checkbox" id="c_frSimpleVirus" onchange="setFrSimpleVirus($(this).is(':checked'));" >Simple Viruses</label>
+                        <div id="perfSubOptions" style="display:fixed; margin-left: 20px; font-size: 0.9em; border-left: 2px solid #5cb85c; padding-left: 8px;">
+                            <label><input type="checkbox" id="c_frHideNames" onchange="setFrHideNames($(this).is(':checked')); if($(this).is(':checked')) { $('#c_frFastRender').prop('checked', true); setFrFastRender(true); }">Hide Names(F)</label>
+                            <label><input type="checkbox" id="c_frHideMass" onchange="setFrHideMass($(this).is(':checked')); if($(this).is(':checked')) { $('#c_frFastRender').prop('checked', true); setFrFastRender(true); }">Hide Mass</label>
+                            <label><input type="checkbox" id="c_frHideSkins" onchange="setFrHideSkins($(this).is(':checked')); if($(this).is(':checked')) { $('#c_frFastRender').prop('checked', true); setFrFastRender(true); }">Hide Skins</label>
+                            <label><input type="checkbox" id="c_frSimpleVirus" onchange="setFrSimpleVirus($(this).is(':checked')); if($(this).is(':checked')) { $('#c_frFastRender').prop('checked', true); setFrFastRender(true); }">Simple
+                                Viruses</label>
                         </div>
 
                         <br />
