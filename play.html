@@ -7,22 +7,29 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="KayiBotX izleme">
-    <meta name="keywords" content="agario, agar, io, cell, cells, virus,kayibotx,kayibot, blob, game, games, web game, html5, fun, flash">
+    <meta name="description" content="Kayigar oyna">
+    <meta name="keywords" content="kayigar, io, cell, cells, virus, blob, game, games, web game, html5, fun, flash">
     <meta name="robots" content="index, follow">
     <meta name="viewport" content="minimal-ui, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>KayiBotX</title>
+    <title>KayigarX</title>
     <link id="favicon" rel="icon" type="image/png" href="assets/img/facio.png" />
     <link href="assets/css/fonts.googleapis.css" rel='stylesheet' type='text/css'>
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="assets/css/index.css" rel="stylesheet">
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/vector.js"></script>
-    <script src="assets/js/script.js"></script>  
-    <!-- <script src="assets/js/script_raw.js"></script> -->
+    <!-- <script src="assets/js/script.js"></script>   -->
+    <script src="assets/js/script_raw.js"></script>
+    <script>
+        window.APP_BRAND = {
+            ...window.APP_BRAND,
+            defaultBrand: "KayiBotX",
+        };
+    </script>
     <script>
         window.addEventListener('keydown', keydown);
+
         function keydown(event) {
             if (event.keyCode == 17) {
                 for (var shift = 0; shift < 5; shift++) setTimeout(split, shift * 50);
