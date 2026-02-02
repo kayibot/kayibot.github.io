@@ -90,6 +90,7 @@
                         <label><input type="checkbox" id="c_hideChat" onchange="setChatHide($(this).is(':checked'));">Hide Chat</label>
                         <label><input type="checkbox" id="c_transparentCells" onchange="setTransparent($(this).is(':checked'));">Transparent</label>
                         <label><input type="checkbox" id="c_focusMode" onchange="setFocus($(this).is(':checked'));"> Focus Mode (G)</label>
+                        <label><input type="checkbox" id="c_hideDistantNames" onchange="setHideDistantNames($(this).is(':checked'));"> Uzak Oyuncunun İsmini Gizle</label>
 
                         <label><input type="checkbox" id="c_frFastRender"
                                 onchange="setFrFastRender($(this).is(':checked')); if($(this).is(':checked')) {/*$('#perfSubOptions').slideDown();*/ setFrHideNames(true); $('#c_frHideNames').prop('checked', true); setFrHideMass(true); $('#c_frHideMass').prop('checked', true); setFrHideSkins(true); $('#c_frHideSkins').prop('checked', true); setFrSimpleVirus(true); $('#c_frSimpleVirus').prop('checked', true);} else {/*$('#perfSubOptions').slideUp();*/ setFrHideNames(false); $('#c_frHideNames').prop('checked', false); setFrHideMass(false); $('#c_frHideMass').prop('checked', false); setFrHideSkins(false); $('#c_frHideSkins').prop('checked', false); setFrSimpleVirus(false); $('#c_frSimpleVirus').prop('checked', false);}">

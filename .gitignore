@@ -3,7 +3,7 @@
 **/zzz_settings.txt
 **/game3.js
 **/proxy.txt
-**/kayibot_remote
+**/kayibot_node
 **/ws-proxy.js
 **/MULTIBOT_README.md
 **/multi-bot-server.js
@@ -15,6 +15,7 @@
 **/local_script_v2.js
 **/ws-connection-manager.js
 **/ADMIN_API_DOCUMENTATION.md
+**/PROTOCOL_ANALYSIS.md
 **/create_license.html
 **/ws-spam.log
 **/node_modules
