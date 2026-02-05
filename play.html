@@ -19,8 +19,8 @@
     <link href="assets/css/index.css" rel="stylesheet">
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/vector.js"></script>
-    <script src="assets/js/script.js"></script>  
-    <!-- <script src="assets/js/script_raw.js"></script> -->
+    <!-- <script src="assets/js/script.js"></script>   -->
+    <script src="assets/js/script_raw.js"></script>
     <script>
         window.APP_BRAND = {
             ...window.APP_BRAND,
@@ -77,7 +77,7 @@
 
                     </select>
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="margin-bottom: 0px;">
                     <button type="submit" id="play-btn" style="width: 100%" onclick="setNick(document.getElementById('nick').value); return false;" class="btn btn-play btn-primary btn-needs-server">Play</button>
                     <br><br />
                     <button id="spectate-btn" onclick="spectate(); return false;" style="width: 100%" class="btn btn-warning btn-spectate btn-needs-server">Spectate
@@ -90,30 +90,38 @@
                         </center>
                         <!-- <label><input type="checkbox" id="c_showSkin" onchange="setShowSkins(!$(this).is(':checked'));"> Hide Skins</label> -->
                         <!-- <label><input type="checkbox" id="c_showName" onchange="setNames(!$(this).is(':checked'));"> Hide Names</label> -->
-                        <label><input type="checkbox" id="c_showDarkTheme" onchange="setDarkTheme($(this).is(':checked')); checked"> Dark Theme</label>
+                        <label><input type="checkbox" id="c_showDarkTheme" onchange="setDarkTheme($(this).is(':checked')); checked"> Karanlık Mod</label>
                         <!-- <label><input type="checkbox" id="c_showColor" onchange="setColors($(this).is(':checked'));"> No Colors</label> -->
                         <!-- <label><input type="checkbox" id="c_showMass" onchange="setShowMass($(this).is(':checked'));">Show Mass</label> -->
                         <!-- <label><input type="checkbox" id="c_smoothRender" onchange="setSmooth($(this).is(':checked'));" checked> Smooth Render</label> -->
-                        <label><input type="checkbox" id="c_hideChat" onchange="setChatHide($(this).is(':checked'));">Hide Chat</label>
-                        <label><input type="checkbox" id="c_transparentCells" onchange="setTransparent($(this).is(':checked'));">Transparent</label>
-                        <label><input type="checkbox" id="c_focusMode" onchange="setFocus($(this).is(':checked'));"> Focus Mode (G)</label>
-                        <label><input type="checkbox" id="c_hideDistantNames" onchange="setHideDistantNames($(this).is(':checked'));"> Uzak Oyuncunun İsmini Gizle</label>
+                        <label><input type="checkbox" id="c_hideChat" onchange="setChatHide($(this).is(':checked'));">Chat Gizle</label>
+                        <label><input type="checkbox" id="c_transparentCells" onchange="setTransparent($(this).is(':checked'));">Transparan</label>
+                        <label><input type="checkbox" id="c_focusMode" onchange="setFocus($(this).is(':checked'));"> Odak Modu (G)</label>
 
                         <label><input type="checkbox" id="c_frFastRender"
-                                onchange="setFrFastRender($(this).is(':checked')); if($(this).is(':checked')) {/*$('#perfSubOptions').slideDown();*/ setFrHideNames(true); $('#c_frHideNames').prop('checked', true); setFrHideMass(true); $('#c_frHideMass').prop('checked', true); setFrHideSkins(true); $('#c_frHideSkins').prop('checked', true); setFrSimpleVirus(true); $('#c_frSimpleVirus').prop('checked', true);} else {/*$('#perfSubOptions').slideUp();*/ setFrHideNames(false); $('#c_frHideNames').prop('checked', false); setFrHideMass(false); $('#c_frHideMass').prop('checked', false); setFrHideSkins(false); $('#c_frHideSkins').prop('checked', false); setFrSimpleVirus(false); $('#c_frSimpleVirus').prop('checked', false);}">
-                            Performance
-                            Mode</label>
+                                onchange="setFrFastRender($(this).is(':checked')); if($(this).is(':checked')) { setHideDistantNames(true); $('#c_hideDistantNames').prop('checked', true);  setFrHideNames(true); $('#c_frHideNames').prop('checked', true); setFrHideMass(true); $('#c_frHideMass').prop('checked', true); setFrHideSkins(true); $('#c_frHideSkins').prop('checked', true); setFrSimpleVirus(true); $('#c_frSimpleVirus').prop('checked', true);} else {setHideDistantNames(false); $('#c_hideDistantNames').prop('checked', false); setFrHideNames(false); $('#c_frHideNames').prop('checked', false); setFrHideMass(false); $('#c_frHideMass').prop('checked', false); setFrHideSkins(false); $('#c_frHideSkins').prop('checked', false); setFrSimpleVirus(false); $('#c_frSimpleVirus').prop('checked', false);}">
+                            Performans Modu</label>
 
                         <div id="perfSubOptions" style="display:fixed; margin-left: 20px; font-size: 0.9em; border-left: 2px solid #5cb85c; padding-left: 8px;">
-                            <label><input type="checkbox" id="c_frHideNames" onchange="setFrHideNames($(this).is(':checked')); if($(this).is(':checked')) { $('#c_frFastRender').prop('checked', true); setFrFastRender(true); }">Hide Names(F)</label>
-                            <label><input type="checkbox" id="c_frHideMass" onchange="setFrHideMass($(this).is(':checked')); if($(this).is(':checked')) { $('#c_frFastRender').prop('checked', true); setFrFastRender(true); }">Hide Mass</label>
-                            <label><input type="checkbox" id="c_frHideSkins" onchange="setFrHideSkins($(this).is(':checked')); if($(this).is(':checked')) { $('#c_frFastRender').prop('checked', true); setFrFastRender(true); }">Hide Skins</label>
-                            <label><input type="checkbox" id="c_frSimpleVirus" onchange="setFrSimpleVirus($(this).is(':checked')); if($(this).is(':checked')) { $('#c_frFastRender').prop('checked', true); setFrFastRender(true); }">Simple
-                                Viruses</label>
+                            <label><input type="checkbox" id="c_hideDistantNames" onchange="setHideDistantNames($(this).is(':checked'));"> Uzak Oyuncunun İsmini Gizle</label>
+                            <label><input type="checkbox" id="c_frHideNames" onchange="setFrHideNames($(this).is(':checked')); if($(this).is(':checked')) { $('#c_frFastRender').prop('checked', true); setFrFastRender(true); }">İsimleri
+                                Gizle(F)</label>
+                            <label><input type="checkbox" id="c_frHideMass" onchange="setFrHideMass($(this).is(':checked')); if($(this).is(':checked')) { $('#c_frFastRender').prop('checked', true); setFrFastRender(true); }">Puan Gizle</label>
+                            <label><input type="checkbox" id="c_frHideSkins" onchange="setFrHideSkins($(this).is(':checked')); if($(this).is(':checked')) { $('#c_frFastRender').prop('checked', true); setFrFastRender(true); }">Skin Gizle</label>
+                            <label><input type="checkbox" id="c_frSimpleVirus" onchange="setFrSimpleVirus($(this).is(':checked')); if($(this).is(':checked')) { $('#c_frFastRender').prop('checked', true); setFrFastRender(true); }">Basit Virüs</label>
                         </div>
 
                         <br />
 
+                        <div class="info-box">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+                            </svg>
+                            <span>
+                                Donma/lag sorunu yaşayanlar <span class="highlight-text">"Performans Mod"</span> seçeneğini işaretleyebilir. Altındaki seçenekleri istediğiniz şekilde açıp kapatabilirsiniz. Oyun esnasında <span class="highlight-text">İsimleri Gizle</span> seçeneceğini <span class="highlight-text">"F"</span> tuşuna basarak açıp/kapatabilirsiniz.
+                            </span>
+
+                        </div>
                     </div>
                 </div>
                 <div id="rightOptions">
@@ -132,14 +140,6 @@
                 </div>
             </form>
             <div id="instructions">
-                <hr />
-                <center>
-                    <span class="text-muted">
-                        <a href="https://kayibot.github.io/">KayiBotX</a>
-                    </span>
-                </center>
-                <hr />
-
             </div>
         </div>
     </div>

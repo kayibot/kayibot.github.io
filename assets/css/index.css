@@ -294,11 +294,11 @@ input[type="checkbox"]:checked::after {
 
 /* --- Instructions --- */
 #instructions {
-    margin-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 15px;
+    margin-top: 2px;
+    padding-top: 0px;
     color: var(--color-text-muted);
     font-size: 0.85rem;
+    border-top: none;
 }
 
 #instructions b {
@@ -359,4 +359,38 @@ input[type="checkbox"]:checked::after {
     z-index: 1000;
     font-weight: bold;
     font-size: 1.5rem;
+}
+
+/* --- Info/Warning Boxes --- */
+.info-box {
+    background: rgba(0, 243, 255, 0.05);
+    border-left: 3px solid var(--color-secondary);
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: 0 8px 8px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    transition: all 0.3s ease;
+}
+
+.info-box:hover {
+    background: rgba(0, 243, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.info-box svg {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    fill: var(--color-secondary);
+    margin-top: 2px;
+}
+
+.highlight-text {
+    color: var(--color-primary);
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(255, 0, 85, 0.4);
 }
