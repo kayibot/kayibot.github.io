@@ -22,13 +22,17 @@
 **/ws-spam.log
 **/node_modules
 **/package-lock.json
+**/MultiOgar-master
 **/package.json
+**/telegram
 .DS_Store
 Thumbs.db
 *.swp
+**/yedek
 *.swo
 .vscode/
 .idea/
 dist/
 build/
 out/
+kayibot_node.zip
