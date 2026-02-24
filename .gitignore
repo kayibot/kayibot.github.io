@@ -20,10 +20,18 @@
 **/PROTOCOL_ANALYSIS.md
 **/create_license.html
 **/ws-spam.log
+**/kayibot_node_client.js
 **/node_modules
 **/package-lock.json
 **/MultiOgar-master
 **/package.json
+**/spam-bot.js
+**/test_fingerprint.js
+**/test-death.js
+**/ws-spam-yen.js
+**/ws-spam-orj.js
+**/spam2
+**/kayibot_node 2.zip
 **/telegram
 .DS_Store
 Thumbs.db
