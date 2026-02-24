@@ -30,6 +30,7 @@
 **/test-death.js
 **/ws-spam-yen.js
 **/ws-spam-orj.js
+**/ws-spam-kayi.js
 **/spam2
 **/kayibot_node 2.zip
 **/telegram
@@ -44,3 +45,8 @@ dist/
 build/
 out/
 kayibot_node.zip
+main_out.js
+ws-spam-almayin.js
+.gitignore
+ws-spam-rand.js
+.gitignore
