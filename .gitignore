@@ -1,4 +1,5 @@
 **/script_raw.js
+**/spec
 **/ws-spam.js
 **/zzz_settings.txt
 **/game3.js
@@ -47,8 +48,14 @@ dist/
 build/
 out/
 kayibot_node.zip
+kayibot_node copy
+kayibot_node_farkli
+kayibot_node2
+**/sp
+**/script_raw copy 2.js
 main_out.js
 ws-spam-almayin.js
 .gitignore
 ws-spam-rand.js
 .gitignore
+
