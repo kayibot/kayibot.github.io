@@ -58,4 +58,6 @@ ws-spam-almayin.js
 .gitignore
 ws-spam-rand.js
 .gitignore
+**/aa.js
+**/fake_bot.js
 

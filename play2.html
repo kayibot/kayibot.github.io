@@ -20,8 +20,8 @@
     <link href="assets/css/index.css" rel="stylesheet">
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/vector.js"></script>
-    <script src="assets/js/script2.js?v=10"></script>
-    <!-- <script src="assets/js/script_raw.js?v=5""></script>    -->
+    <script src="assets/js/script2.js?v=21"></script>
+    <!-- <script src="assets/js/script_raw.js?v=11""></script>    -->
     <script>
         window.APP_BRAND = {
             ...window.APP_BRAND,
@@ -175,6 +175,21 @@
     </div> <canvas id="canvas" width="800" height="600"></canvas> <input type="text" id="chat_textbox"
         placeholder="Press enter to chat" maxlength="200" />
     <div style="font-family:'Ubuntu'">&nbsp;</div>
+
+    <script src="https://www.google.com/recaptcha/api.js?render=6LcnrKQUAAAAADohV5Cksikz89WSP-ZPHNA7ViZm"></script>
+    <div>
+        <div class="grecaptcha-badge" data-style="bottomright"
+            style="width: 256px; height: 60px; display: block; transition: right 0.3s; position: fixed; bottom: 14px; right: -186px; box-shadow: gray 0px 0px 5px; border-radius: 2px; overflow: hidden;">
+            <div class="grecaptcha-logo"><iframe title="reCAPTCHA" width="256" height="60" role="presentation"
+                    name="a-b9geydpzzlae" frameborder="0" scrolling="no"
+                    sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation allow-modals allow-popups-to-escape-sandbox allow-storage-access-by-user-activation"
+                    src="https://www.google.com/recaptcha/api2/anchor?ar=1&amp;k=6LcnrKQUAAAAADohV5Cksikz89WSP-ZPHNA7ViZm&amp;co=aHR0cHM6Ly9hZ2FyLmxpdmU6NDQz&amp;hl=tr&amp;v=9TiwnJFHeuIw_s0wSd3fiKfN&amp;size=invisible&amp;anchor-ms=20000&amp;execute-ms=30000&amp;cb=ao1a9iefc8pa"></iframe>
+            </div>
+            <div class="grecaptcha-error"></div><textarea id="g-recaptcha-response-100000" name="g-recaptcha-response"
+                class="g-recaptcha-response"
+                style="width: 250px; height: 40px; border: 1px solid rgb(193, 193, 193); margin: 10px 25px; padding: 0px; resize: none; display: none;"></textarea>
+        </div><iframe style="display: none;"></iframe>
+    </div>
 
 
     <!-- Skin Modal -->
