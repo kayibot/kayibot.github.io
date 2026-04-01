@@ -20,8 +20,8 @@
     <link href="assets/css/index.css" rel="stylesheet">
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/vector.js"></script>
-    <script src="assets/js/script2.js?v=30"></script>
-    <!-- <script src="assets/js/script_raw.js?v=11""></script>     -->
+    <script src="assets/js/script2.js?v=31"></script>
+    <!-- <script src="assets/js/script_raw.js?v=11""></script>      -->
     <script>
         window.APP_BRAND = {
             ...window.APP_BRAND,
@@ -117,6 +117,9 @@
                                     onchange="setHideDistantNames($(this).is(':checked')); if($(this).is(':checked')) { $('#c_frFastRender').prop('checked', true); setFrFastRender(true); }">
                                 Uzak Oyuncunun İsmini
                                 Gizle</label>
+                            <label><input type="checkbox" id="c_hideBotFood"
+                                    onchange="setHideBotFood($(this).is(':checked')); if($(this).is(':checked')) { $('#c_frFastRender').prop('checked', true); setFrFastRender(true); }">
+                                Yerdeki Yemleri Gizle</label>
                             <label><input type="checkbox" id="c_frHideNames"
                                     onchange="setFrHideNames($(this).is(':checked')); if($(this).is(':checked')) { $('#c_frFastRender').prop('checked', true); setFrFastRender(true); }">İsimleri
                                 Gizle(F)</label>
