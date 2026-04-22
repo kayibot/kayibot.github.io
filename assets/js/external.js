@@ -33,6 +33,244 @@ function loadJS(FILE_URL) {
 (function (wHandle, wjQuery) {
 
 
+
+    function openServer() {
+        var e = document.querySelector("#gamemodes");
+        "block" === e.style.display ? e.style.display = "none" : e.style.display = "block"
+    }
+
+    function openSettings() {
+        var e = document.querySelector("#settings");
+        "block" === e.style.display ? e.style.display = "none" : e.style.display = "block"
+    }
+
+    function gdtr_skin_sec(e) {
+        document.getElementById("skin_no_gdtr").innerHTML = e,
+            $(".skinres").attr("src", site_adi + "/skins/" + e + ".webp"),
+            $("#skinSelector img").attr("src", site_adi + "/skins/" + e + ".webp"),
+            $("#skinSelector small").text(""),
+            $(".skinid").val(e),
+            document.querySelector("#selector").style.display = "none"
+    }
+    $("#playBtn").click(function (e) {
+        $("#dmca").hide()
+    });
+
+    function findInPage(str) {
+        $('#clearSearch').hide();
+        $('.skinList.skinler > li').show();
+        var foundin = $('.skinList li > p:contains("' + str.trim() + '")');
+        $(foundin).each(function () {
+            var image = $(this).parent().children("img");
+            image.each(function () {
+                this.src = $(this).data('src');
+            });
+        });
+        $(".skinList.skinler > li").not($(foundin).closest("li")).hide();
+        $('#clearSearch').show();
+        $("#skinClose").hide();
+    }
+
+    var loaded = false;
+    var version = "1475551152";
+    var mincount = 15;
+    var maxcount = 30;
+    $("#skinSelector").click(function (e) {
+        if (e.stopPropagation(),
+            $("#skinSelector").blur(),
+            $("#selector").fadeIn(),
+            1 != loaded) {
+            for (var t = 0; t < knownNameDict.length; t++) {
+                var i = knownNameDict[t];
+                $(".skinList.skinler").append('<li class="lazy" style="position: relative"><img class="dontscroll" onclick="gdtr_skin_sec(' + i + ');"\tdata-src="' + site_adi + "/skins/" + i + ".webp?v=" + version + '"><p style=" position: absolute; left: 0; right: 0; bottom: 0; background: red; border-radius: 10px; margin: 0px; color: white;">' + i + '</p></li>')
+            }
+            $(".skinList.skinler li").slice(45).hide(),
+                $(".skinList.skinler li > img").not(":first").not(":hidden").each(function () {
+                    this.src = $(this).data("src")
+                }),
+                $(".skins").scroll(function () {
+                    $(".skinList.skinler li").not(":hidden").length < mincount || $(this).scrollTop() + $(this).innerHeight() >= this.scrollHeight - 20 && ($(".skinList.skinler li").slice(mincount, maxcount).fadeIn("fast"),
+                        $(".skinList.skinler li > img").not(":first").not(":hidden").each(function () {
+                            this.src = $(this).data("src")
+                        }),
+                        mincount += 15,
+                        maxcount += 15)
+                }),
+                loaded = !0
+        }
+        return !1
+    }),
+        $(".select_background").click(function (e) {
+            return e.stopPropagation(),
+                $("#bgmodel").fadeIn(), !1
+        }),
+        $("#overlays").click(function (e) {
+            e.stopPropagation(),
+                $(e.target).is("#skinModal") || $(e.target).is("#skins") || $(e.target).is("#clearSearch") || $(e.target).is("#searchText")
+        }),
+        $("#modal").click(function (e) {
+            e.stopPropagation()
+        }),
+        String.prototype.capitalize = function () {
+            return this.charAt(0).toUpperCase() + this.slice(1)
+        },
+        $("#chat_textbox").bind("cut copy paste", function (e) {
+            return !1
+        }),
+        window.addEventListener("load", function () {
+            window.cookieconsent.initialise({
+                palette: {
+                    popup: {
+                        background: "#000"
+                    },
+                    button: {
+                        background: "transparent",
+                        text: "#f1d600",
+                        border: "#f1d600"
+                    }
+                },
+                content: {
+                    message: "This website uses cookies to ensure you get the best experience on our website."
+                }
+            })
+        }),
+        /*
+        document.onkeypress = function (e) {
+            if (123 == (e = e || window.event).keyCode)
+                return !1
+        },
+        document.onmousedown = function (e) {
+            if (123 == (e = e || window.event).keyCode)
+                return !1
+        },
+        document.onkeydown = function (e) {
+            if (123 == (e = e || window.event).keyCode)
+                return !1
+        },*/
+        $("#gamemodebtn").click(function () {
+            $("#gamemodes").toggle()
+        }),
+        $("#gamemodes li ").click(function () {
+            setGameMode(this.id)
+        }),
+        $(".u-input select#serversecx").change(function () {
+            setGameMode($(this).val())
+        });
+
+
+    var say = 1,
+        hop = 1;
+
+    function rY() {
+        if (hop += 1,
+            1 == ++say)
+            say = -2;
+        else {
+            var e = document.getElementById("nick").value.replace(/[|&ÒˆÒ‰Û£Û£Û£Û£;+,]/g, ":)"),
+                t = $(".gdtr_clan option").filter(":selected").val();
+            setCookie("userName", e, 999),
+                "Clan Clear" == t && delete_cookie("userClan"),
+                "" != t && "Clan Clear" != t ? (setCookie("userClan", t, 999),
+                    setNick(t + " " + e)) : setNick(e),
+                $(".user-score_txt").show(),
+                $("#userscore .box").show(),
+                $("#chat").show(),
+                $("#userscore").show(),
+                $(".fps-game").show();
+        }
+        hop > 7 && (hop = 0,
+            googletag.pubads().refresh())
+    }
+
+    $(".theme_body_change").click(function () {
+        var e = $(this).data("theme"),
+            t = document.body;
+        e ? ($(this).data("theme", 0),
+            $(this).attr("data-theme", 0),
+            $("#theme_body").attr("src", site_adi + "/img/images/dark_mode.svg"),
+            setCookie("darkTheme", 0, 999),
+            t.classList.remove("dark")) : ($(this).data("theme", 1),
+                $(this).attr("data-theme", 1),
+                $("#theme_body").attr("src", site_adi + "/img/images/light_mode.svg"),
+                setCookie("darkTheme", 1, 999),
+                t.classList.add("dark"))
+    });
+
+    function showLogin() {
+        $("#userscore").hide();
+        var e = $.Event("keydown", {
+            keyCode: 27
+        });
+        $("body").trigger(e)
+    }
+    $("#select_theme div  div").click(function () {
+        var e = $(this).data("theme");
+        "background" != e && ($("#select_theme div  div").removeClass("active"),
+            $(this).addClass("active"),
+            "white" == e ? ($(".select_white").addClass("active"),
+                default_tema(!0)) : "dark" == e ? ($(".select_dark").addClass("active"),
+                    setDarkTheme(!0)) : "green" == e ? ($(".select_green").addClass("active"),
+                        yesiltema(!0)) : "blue" == e ? ($(".select_blue").addClass("active"),
+                            mavitema(!0)) : "pink" == e && ($(".select_pink").addClass("active"),
+                                pembetema(!0)))
+    }),
+        $(".hide-score-info").click(function () {
+            "1" == $(this).data("active") ? ($(this).data("active", 0),
+                $(this).attr("data-active", 0),
+                $(".game-info").hide(100),
+                $(".hide-score-info").html('<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 10l5 5 5-5z"/></svg>')) : ($(".game-info").show(100),
+                    $(this).data("active", 1),
+                    $(this).attr("data-active", 1),
+                    $(".hide-score-info").html('<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 14l5-5 5 5z"/></svg>'))
+        }),
+        $(".hide-leader-board").click(function () {
+            "1" == $(this).data("active") ? ($(this).data("active", 0),
+                $(this).attr("data-active", 0),
+                $("#leaderboard_list ul").hide(100)) : ($("#leaderboard_list ul").show(100),
+                    $(this).data("active", 1),
+                    $(this).attr("data-active", 1))
+        }),
+        $(".emoji_btn").click(function () {
+            "1" == $(this).data("active") ? ($(this).data("active", 0),
+                $(this).attr("data-active", 0),
+                $("#emoji_list").hide(100)) : ($("#emoji_list").show(100),
+                    $(this).data("active", 1),
+                    $(this).attr("data-active", 1))
+        }),
+        $("#emoji_list span").click(function () {
+            var e = $("#chat_textbox");
+            e.val(e.val() + " " + $(this).text())
+        }),
+
+        $(".btn-flag").click(function () {
+            var e = $(this).data("lang");
+            setCookie("app_lang", e, 999);
+            location.reload();
+        }),
+        $("#chat_textbox").bind("cut copy paste", function (e) {
+            return !1
+        });
+
+    var link = "";
+    function save(lnk) {
+        link = lnk;
+        $('.confirm').show();
+    }
+
+    $("#confirmYes").click(function () {
+        if ($('#sartlar').is(':checked')) {
+            $('.confirm').hide();
+            window.location.assign(link);
+        } else {
+            $(".sartlar_text").css({ "color": "red" });
+        }
+    });
+
+
+    $("#confirmNo").click(function () {
+        $('.confirm').hide();
+    });
+
     console.log('🎮 External script loaded - Buton ekleniyor...');
 
     // Butonu eklemek için güvenli fonksiyon
@@ -371,6 +609,7 @@ function loadJS(FILE_URL) {
     var CONNECTION_URL = __ana_server;
     let currentToken = null, firtloginTest = false;
     function initTurnstile() {
+        console.log("initTurnstile calisiyor....");
         if (!document.getElementById("turnstile-widget")) {
             let container = document.getElementById("turnstile-container");
             let widget = document.createElement("div");
