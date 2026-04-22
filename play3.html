@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="KayiBotX oyna">
+    <meta name="keywords" content="kayibotx, io, cell, cells, virus, blob, game, games, web game, html5, fun, flash">
+    <meta name="robots" content="index, follow">
+    <meta name="viewport"
+        content="minimal-ui, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>KayiBotX</title>
+    <link id="favicon" rel="icon" type="image/png" href="assets/img/facio.png" />
+    <link href="assets/css/fonts.googleapis.css" rel='stylesheet' type='text/css'>
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/index.css" rel="stylesheet">
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/vector.js"></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async="" defer=""></script>
+    <!-- <script src="assets/js/script_raw.js?v=95"></script> -->
+    <script src="assets/js/script3.js?v=95"></script>
+
+
+
+
+    <script>
+        window.APP_BRAND = {
+            ...window.APP_BRAND,
+            defaultBrand: " KayiBotX",
+        }; </script>
+    <script>
+        window.addEventListener('keydown', keydown);
+
+        function keydown(event) {
+            if (event.keyCode == 17) {
+                for (var shift = 0; shift < 5; shift++) setTimeout(split, shift * 50);
+            }
+
+            // if (event.keyCode == 65) {
+            //     for (var i = 0; i < 3; i++) setTimeout(split, i * 50);
+            // }
+            // if (event.keyCode == 68) {
+            //     split();
+            //     setTimeout(split, 50);
+            // }
+        }
+
+        // /*global $*/
+        function split() {
+            $("body").trigger($.Event("keydown", {
+                keyCode: 32
+            }));
+            $("body").trigger($.Event("keyup", {
+                keyCode: 32
+            }));
+        }
+    </script>
+</head>
+
+<body>
+    <div id="overlays">
+        <div id="helloDialog">
+            <form role="form">
+                <div class="form-group">
+                    <center>
+                        <h2 id="title">KayiBotX</h2>
+                    </center>
+                </div>
+                <div class="form-group"> <input id="nick" class="form-control" style="margin-bottom: 10px;"
+                        placeholder="Nick" maxlength="30" />
+                    <select id="gamemode" class="form-control" style="margin-bottom: 10px;"
+                        onchange="setServer($(this).val())" required>
+                        <option selected disabled>Select:</option>
+                        <option value="wss://server.z2se.in:5556?key=ddf52bb43">SERVER 1</option>
+                        <option value="wss://ffa2.agar.live">SERVER 2</option>
+
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0px;">
+                    <button type="submit" id="play-btn" style="width: 100%"
+                        onclick="setNick(document.getElementById('nick').value); return false;"
+                        class="btn btn-play btn-primary btn-needs-server">Play</button>
+                    <br><br />
+                    <button id="spectate-btn" onclick="spectate(); return false;" style="width: 100%"
+                        class="btn btn-warning btn-spectate btn-needs-server">Spectate
+                    </button>
+
+
+
+
+                </div>
+
+                <div id="turnstile-container" style="margin-top:10px">
+                    <div id="turnstile-widget">
+                        <div><input type="hidden" name="cf-turnstile-response" id="cf-chl-widget-72w0a_response"
+                                value="1.NVumehEnSuMfwAHYKgTwwj9CJLUUcLO8xnZLfm7sKhUqOAISYQL_4dUfW02nqb3d57DuzJ6j8GkiLWRQxPtc1yEw_2G6jPlg14sVIdtxuW37W8kupyb_8Q34Wmb6_X4HdibOn6yYpEtDmHfzW4bbxh9m9gq6zcUwJVYNdlRq_jsNzCDIjUDonte_WjcL2l1jsJ713wJVzawnMij0X7F0BT0xv6FTivr0bGC32n1jMHSf3jGj_6WCxNlNzcvPlMgp86yRYDVU1dV3k8H0JGjp2fmdlYx7-HMpJgoTUHNtr5aqzFCIVMs2q2RlCifyHH9Q1pE3i5DlzaToC2by9_KUBAr4ZpbCwkcVR884l9HEmtqGObXkcmlvg0B6-45NMgsnNKQqU8dqlufpXOv2x7KcOs300og2bjm0V0dBGENfVH9WUKuuLv6_zZhfPI4M6nI4N7k57hQsBigwCx4kKMNcOho37lXT5uPhjdeFMR3UNxsT31iRmjYGR48V5udp36VuDzb5o5H3BAKXT0QLKKDHOKMh8DeLvJ3bGVVfU_-KL1VmLAxYYaHIX6Q-ZIH7fLiYi5k8s9KgMfvqyYbVpgXCmgNSV1YPy9hjEuqwS5xlnEY3YdGqFCH_rQC537Fsi57LCHE6cbpXRU0KtCTCwsmC3Q.MnlZhidkPBsrcRQ9fFhsHw.64b4e8328c768f38ff37451698892ba477e80bd74e8e0703e62f9bcaeaa14864">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="leftOptions">
+                    <div style="margin: 6px;">
+                        <center>
+                            <h3>Settings</h3>
+                        </center>
+                        <!-- <label><input type="checkbox" id="c_showSkin" onchange="setShowSkins(!$(this).is(':checked'));"> Hide Skins</label> -->
+                        <!-- <label><input type="checkbox" id="c_showName" onchange="setNames(!$(this).is(':checked'));"> Hide Names</label> -->
+                        <label><input type="checkbox" id="c_showDarkTheme"
+                                onchange="setDarkTheme($(this).is(':checked')); checked"> Karanlık Mod</label>
+                        <!-- <label><input type="checkbox" id="c_showColor" onchange="setColors($(this).is(':checked'));"> No Colors</label> -->
+                        <!-- <label><input type="checkbox" id="c_showMass" onchange="setShowMass($(this).is(':checked'));">Show Mass</label> -->
+                        <!-- <label><input type="checkbox" id="c_smoothRender" onchange="setSmooth($(this).is(':checked'));" checked> Smooth Render</label> -->
+                        <label><input type="checkbox" id="c_hideChat"
+                                onchange="setChatHide($(this).is(':checked'));">Chat Gizle</label>
+                        <label><input type="checkbox" id="c_transparentCells"
+                                onchange="setTransparent($(this).is(':checked'));">Transparan</label>
+                        <label><input type="checkbox" id="c_focusMode" onchange="setFocus($(this).is(':checked'));">
+                            Odak Modu (G)</label>
+
+                        <label><input type="checkbox" id="c_frFastRender"
+                                onchange="setFrFastRender($(this).is(':checked')); if($(this).is(':checked')) { setHideDistantNames(true); $('#c_hideDistantNames').prop('checked', true);  setFrHideNames(true); $('#c_frHideNames').prop('checked', true); setFrHideMass(true); $('#c_frHideMass').prop('checked', true); setFrHideSkins(true); $('#c_frHideSkins').prop('checked', true); setFrSimpleVirus(true); $('#c_frSimpleVirus').prop('checked', true);} else {setHideDistantNames(false); $('#c_hideDistantNames').prop('checked', false); setFrHideNames(false); $('#c_frHideNames').prop('checked', false); setFrHideMass(false); $('#c_frHideMass').prop('checked', false); setFrHideSkins(false); $('#c_frHideSkins').prop('checked', false); setFrSimpleVirus(false); $('#c_frSimpleVirus').prop('checked', false);}">
+                            Performans Modu</label>
+
+                        <div id="perfSubOptions"
+                            style="display:fixed; margin-left: 20px; font-size: 0.9em; border-left: 2px solid #5cb85c; padding-left: 8px;">
+                            <label><input type="checkbox" id="c_hideDistantNames"
+                                    onchange="setHideDistantNames($(this).is(':checked')); if($(this).is(':checked')) { $('#c_frFastRender').prop('checked', true); setFrFastRender(true); }">
+                                Uzak Oyuncunun İsmini
+                                Gizle</label>
+                            <label><input type="checkbox" id="c_hideBotFood"
+                                    onchange="setHideBotFood($(this).is(':checked')); if($(this).is(':checked')) { $('#c_frFastRender').prop('checked', true); setFrFastRender(true); }">
+                                Yerdeki Yemleri Gizle</label>
+                            <label><input type="checkbox" id="c_frHideNames"
+                                    onchange="setFrHideNames($(this).is(':checked')); if($(this).is(':checked')) { $('#c_frFastRender').prop('checked', true); setFrFastRender(true); }">İsimleri
+                                Gizle(F)</label>
+                            <label><input type="checkbox" id="c_frHideMass"
+                                    onchange="setFrHideMass($(this).is(':checked')); if($(this).is(':checked')) { $('#c_frFastRender').prop('checked', true); setFrFastRender(true); }">Puan
+                                Gizle</label>
+                            <label><input type="checkbox" id="c_frHideSkins"
+                                    onchange="setFrHideSkins($(this).is(':checked')); if($(this).is(':checked')) { $('#c_frFastRender').prop('checked', true); setFrFastRender(true); }">Skin
+                                Gizle</label>
+                            <label><input type="checkbox" id="c_frSimpleVirus"
+                                    onchange="setFrSimpleVirus($(this).is(':checked')); if($(this).is(':checked')) { $('#c_frFastRender').prop('checked', true); setFrFastRender(true); }">Basit
+                                Virüs</label>
+                        </div>
+
+                        <br />
+
+                        <div class="info-box">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+                            </svg>
+                            <span>
+                                Donma/lag sorunu yaşayanlar <span class="highlight-text">"Performans Mod"</span>
+                                seçeneğini işaretleyebilir. Altındaki seçenekleri istediğiniz şekilde açıp
+                                kapatabilirsiniz. Oyun esnasında <span class="highlight-text">İsimleri Gizle</span>
+                                seçeneceğini <span class="highlight-text">"F"</span> tuşuna basarak
+                                açıp/kapatabilirsiniz.
+                            </span>
+
+                        </div>
+                    </div>
+                </div>
+                <div id="rightOptions">
+                    <div style="margin: 6px;">
+                        <center>
+                            <h3>Skin</h3>
+                        </center>
+                        <div style="text-align: center;">
+                            <div
+                                style="width: 120px; height: 120px; border: 3px solid #ddd; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; margin: 15px 0; background: #f5f5f5; overflow: hidden;">
+                                <img id="selectedSkinPreview" src="https://agar.live/skins/noskin.png" alt=""
+                                    style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                            </div>
+                            <br>
+                            <button type="button" onclick="openSkinModal(); return false;" class="btn btn-primary"
+                                style="width: 100%; margin-top: 10px;">Change Skin</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div id="instructions">
+            </div>
+        </div>
+    </div>
+
+    </div> <canvas id="canvas" width="800" height="600"></canvas> <input type="text" id="chat_textbox"
+        placeholder="Press enter to chat" maxlength="200" />
+    <div style="font-family:'Ubuntu'">&nbsp;</div>
+
+    <!-- Skin Modal -->
+    <div id="skinModal"
+        style="display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); justify-content: center; align-items: center;">
+        <div
+            style="border-radius: 12px; padding: 30px; max-width: 800px; width: 90%; max-height: 80vh; overflow-y: auto; position: relative; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
+            <span onclick="closeSkinModal()"
+                style="position: absolute; top: 15px; right: 20px; font-size: 30px; font-weight: bold; color: #999; cursor: pointer;">&times;</span>
+            <h3 style="color: #5cb85c; margin-bottom: 25px; font-size: 28px; text-align: center;">Select Your Skin</h3>
+            <div id="skinGrid"
+                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 15px; margin-top: 20px;">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate 600 skins dynamically
+        function generateSkinList() {
+            const skinGrid = document.getElementById('skinGrid');
+
+            // Add "No Skin" option first
+            const noSkinImg = document.createElement('img');
+            noSkinImg.className = 'skin_img';
+            noSkinImg.src = 'https://agar.live/skins/noskin.png';
+            noSkinImg.style.width = '80px';
+            noSkinImg.style.height = '80px';
+            noSkinImg.style.border = '2px solid #e0e0e0';
+            noSkinImg.style.borderRadius = '50%';
+            noSkinImg.style.cursor = 'pointer';
+            noSkinImg.style.transition = 'all 0.3s ease';
+            noSkinImg.style.objectFit = 'contain';
+            noSkinImg.style.background = '#f9f9f9';
+            noSkinImg.onclick = function () {
+                setSkinListClick(null);
+            };
+            noSkinImg.onmouseover = function () {
+                this.style.transform = 'scale(1.1)';
+                this.style.borderColor = '#5cb85c';
+                this.style.boxShadow = '0 5px 15px rgba(92, 184, 92, 0.4)';
+            };
+            noSkinImg.onmouseout = function () {
+                this.style.transform = 'scale(1)';
+                this.style.borderColor = '#e0e0e0';
+                this.style.boxShadow = 'none';
+            };
+            skinGrid.appendChild(noSkinImg);
+
+            // Add numbered skins
+            for (let i = 1; i <= 600; i++) {
+                const img = document.createElement('img');
+                img.className = 'skin_img';
+                img.src = 'https://agar.live/skins/' + i + '.png';
+                img.rel = i - 2;
+                img.style.width = '80px';
+                img.style.height = '80px';
+                img.style.border = '2px solid #e0e0e0';
+                img.style.borderRadius = '50%';
+                img.style.cursor = 'pointer';
+                img.style.transition = 'all 0.3s ease';
+                img.style.objectFit = 'contain';
+                img.style.background = '#f9f9f9';
+                img.onclick = function () {
+                    setSkinListClick(i);
+                };
+                img.onmouseover = function () {
+                    this.style.transform = 'scale(1.1)';
+                    this.style.borderColor = '#5cb85c';
+                    this.style.boxShadow = '0 5px 15px rgba(92, 184, 92, 0.4)';
+                };
+                img.onmouseout = function () {
+                    this.style.transform = 'scale(1)';
+                    this.style.borderColor = '#e0e0e0';
+                    this.style.boxShadow = 'none';
+                };
+                img.onerror = function () {
+                    this.remove();
+                };
+                skinGrid.appendChild(img);
+            }
+        }
+
+        function setSkinListClick(id) {
+            console.log('Selected skin ID:', id);
+            const preview = document.getElementById('selectedSkinPreview');
+            if (id === null || id === undefined) {
+                preview.src = 'https://agar.live/skins/noskin.png';
+                localStorage.removeItem('selectedSkin');
+            } else {
+                preview.src = 'https://agar.live/skins/' + id + '.png';
+                localStorage.setItem('selectedSkin', id);
+            }
+            closeSkinModal();
+        }
+
+        function openSkinModal() {
+            document.getElementById('skinModal').style.display = 'flex';
+        }
+
+        function closeSkinModal() {
+            document.getElementById('skinModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function (event) {
+            const modal = document.getElementById('skinModal');
+            if (event.target === modal) {
+                closeSkinModal();
+            }
+        }
+
+        // Initialize skin grid on page load
+        window.addEventListener('load', function () {
+            generateSkinList();
+
+            // Load saved skin from localStorage
+            const savedSkin = localStorage.getItem('selectedSkin');
+            if (savedSkin) {
+                const preview = document.getElementById('selectedSkinPreview');
+                preview.src = 'https://agar.live/skins/' + savedSkin + '.png';
+            }
+        });
+    </script>
+
+
+
+    <veepn-intro-offer>
+        <style>
+            @font-face {
+                font-family: FigtreeVF;
+                src: url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) format("woff2 supports variations"), url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) format("woff2-variations");
+                font-weight: 100 1000;
+                font-display: swap
+            }
+        </style>
+    </veepn-intro-offer>
+
+</body>
+
+</html>
