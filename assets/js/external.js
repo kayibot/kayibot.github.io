@@ -25,12 +25,216 @@ function loadJS(FILE_URL) {
 
 (function (wHandle, wjQuery) {
 
+// =======================================================
+    // 0. WEBSOCKET HOOK (Araya Girme)
+    // =======================================================
+    const OriginalWebSocket = window.WebSocket;
+    let gameWs = null;
+    let gameOnMessage = null; // Oyunun gerçek mesaj dinleyicisi
+
+    window.WebSocket = function (url, protocols) {
+        if (url === 'wss://0&recaptcha=null' || url.includes('recaptcha=null')) {
+return {
+            send: () => {},
+            close: () => {},
+            readyState: 3,
+            onopen: null,
+            onmessage: null,
+            onclose: null,
+            onerror: null
+        };
+        }
+        //console.log('%c[Injector] Oyun WebSocket Bağlantısı Yakalandı: ' + url, 'color: #ffaa00; font-weight: bold;');
+
+        const ws = new OriginalWebSocket(url, protocols);
+        gameWs = ws;
+
+        const originalSet = Object.getOwnPropertyDescriptor(OriginalWebSocket.prototype, 'onmessage').set;
+        Object.defineProperty(ws, 'onmessage', {
+            set: function (val) {
+                gameOnMessage = val;
+                if (originalSet) originalSet.call(ws, val);
+            },
+            get: function () {
+                return gameOnMessage;
+            }
+        });
+
+        const originalSend = ws.send;
+        ws.send = function (data) {
+            return originalSend.call(this, data);
+        };
+
+        return ws;
+    };
+
+    window.WebSocket.prototype = OriginalWebSocket.prototype;
+    window.WebSocket.CONNECTING = OriginalWebSocket.CONNECTING;
+    window.WebSocket.OPEN = OriginalWebSocket.OPEN;
+    window.WebSocket.CLOSING = OriginalWebSocket.CLOSING;
+    window.WebSocket.CLOSED = OriginalWebSocket.CLOSED;
+
+    // =======================================================
+    // 1. BOT SINIFI (Tekil İstemci)
+    // =======================================================
+    class Bot {
+        constructor(id, token, url, manager) {
+            this.id = id;
+            this.token = token;
+            this.url = url;
+            this.manager = manager;
+            this.ws = null;
+
+            this.connect();
+        }
+
+        connect() {
+            let finalUrl = this.url + "&recaptcha=" + this.token;
+            console.log(`[Bot ${this.id}] Bağlanıyor: ${finalUrl}`);
+
+            // Hook'a takılmaması için doğrudan OriginalWebSocket kullanıyoruz
+            this.ws = new OriginalWebSocket(finalUrl);
+            this.ws.binaryType = "arraybuffer";
+
+            this.ws.onopen = () => this.onOpen();
+            this.ws.onmessage = (msg) => this.onMessage(msg);
+            this.ws.onclose = () => this.onClose();
+            this.ws.onerror = (err) => this.onError(err);
+        }
+
+        onOpen() {
+            console.log(`[Bot ${this.id}] WebSocket açıldı.`);
+
+            let msg1 = new DataView(new ArrayBuffer(5));
+            msg1.setUint8(0, 254);
+            msg1.setUint32(1, 5, true);
+            this.ws.send(msg1.buffer);
+
+            let msg2 = new DataView(new ArrayBuffer(5));
+            msg2.setUint8(0, 255);
+            msg2.setUint32(1, 123456789, true);
+            this.ws.send(msg2.buffer);
+
+            // Gelişmiş Spec komutu gönderimi
+            setTimeout(async () => {
+                for (let i = 0; i < this.id; i++) {
+                    if (this.ws.readyState !== OriginalWebSocket.OPEN) break;
+
+                    const spectateMsg = new DataView(new ArrayBuffer(1));
+                    spectateMsg.setUint8(0, 1);
+                    this.ws.send(spectateMsg.buffer);
+                    console.log(`[Bot ${this.id}] Spec komutu gönderildi (${i+1}/${this.id})`);
+
+                    await new Promise(r => setTimeout(r, 500));
+                }
+            }, 1000);
+        }
+
+        onMessage(msg) {
+            let view = new DataView(msg.data);
+            if (view.byteLength === 0) return;
+
+            let opcode = view.getUint8(0);
+
+            // INJECT İŞLEMİ (Eğer gameOnMessage atanmışsa ve Hook devredeyse)
+            if (opcode === 16) { // Yalnızca 16 Update Node paketlerini aktarmayı tercih edebilirsiniz
+                 //console.log(`[Bot ${this.id}] -> Opcode: ${opcode}`);
+                if (gameOnMessage) {
+                    try {
+                        gameOnMessage({ data: msg.data });
+                    } catch (e) {
+                        console.error(`[Bot ${this.id}] Inject Hatası:`, e);
+                    }
+                }
+            }
+        }
+
+        onClose() {
+            console.log(`[Bot ${this.id}] Bağlantı kapandı.`);
+            this.manager.removeBot(this.id);
+        }
+
+        onError(err) {
+            console.error(`[Bot ${this.id}] Bağlantı Hatası:`, err);
+        }
+
+        disconnect() {
+            if (this.ws && (this.ws.readyState === OriginalWebSocket.OPEN || this.ws.readyState === OriginalWebSocket.CONNECTING)) {
+                this.ws.close();
+            }
+        }
+    }
+
+    // =======================================================
+    // 2. BOT MANAGER SINIFI (Client Havuzu)
+    // =======================================================
+    class BotManager {
+        constructor() {
+            this.bots = new Map(); // window kullanmadan internal map içinde saklıyoruz
+            this.nextBotId = 1;
+            this.defaultWsUrl = "wss://server.z2se.in:5556?key=ddf52bb43";
+        }
+
+        spawnBots(count) {
+            console.log(`[BotManager] ${count} adet bot oluşturma isteği alındı...`);
+
+            if (!window.turnstile) {
+                console.error('[BotManager] window.turnstile bulunamadı! Token alınamaz.');
+                return;
+            }
+
+            // Aynı div üzerine defalarca render atmak Turnstile iframe'lerini bozabilir.
+            // Bu nedenle her bota özel ayrı bir DIV (container) üreterek stabilite sağlıyoruz.
+            for (let i = 0; i < count; i++) {
+                let currentReqId = this.nextBotId++;
+
+                const tsContainer = document.createElement('div');
+                tsContainer.id = "bot-turnstile-" + currentReqId;
+                tsContainer.style.display = "none";
+                document.body.appendChild(tsContainer);
+
+                window.turnstile.render('#' + tsContainer.id, {
+                    sitekey: '0x4AAAAAAA_Q-HKZIZaP8Hof',
+                    callback: (token) => {
+                        console.log(`[BotManager] Token alındı. Target Bot ID: ${currentReqId}`);
+
+                        // Token ile birlikte objemizi üretip havuzumuza dahil ediyoruz
+                        const bot = new Bot(currentReqId, token, this.defaultWsUrl, this);
+                        this.bots.set(currentReqId, bot);
+
+                        // Token başarılı alındığı için geçici DIV'i silebiliriz
+                        window.turnstile.remove('#' + tsContainer.id);
+                        tsContainer.remove();
+                    }
+                });
+            }
+        }
+
+        removeBot(id) {
+            this.bots.delete(id);
+            console.log(`[BotManager] Bot ${id} silindi. Aktif Bot Sayısı: ${this.activeCount()}`);
+        }
+
+        activeCount() {
+            return this.bots.size;
+        }
+
+        // Havuzdaki tüm botları temizlemek vs. isterseniz ek yardımcı metotlar
+        clearAll() {
+            this.bots.forEach(bot => bot.disconnect());
+            this.bots.clear();
+        }
+    }
+
+
+
+
     setTimeout(() => {
         return createLoginUI();
-    }, 3000);
+    }, 2000);
 
-    function createLoginUI() {
-        //  const botManager = new BotManager();
+    function createLoginUI() { 
+         const botManager = new BotManager();
 
         const container = document.createElement('div');
         container.style.position = 'absolute';
@@ -52,40 +256,40 @@ function loadJS(FILE_URL) {
         document.body.appendChild(container);
 
         btn.addEventListener('click', () => {
-            // botManager.spawnBots(3); // Butona basıldığında 3 WebSocket bağlantısı açılır
+            botManager.spawnBots(3); // Butona basıldığında 3 WebSocket bağlantısı açılır
         });
     }
 
     var CONNECTION_URL = __ana_server;
 
 
-    window.addEventListener('DOMContentLoaded', () => {
-        // window kirliliği yapmadan, lokal (closure) içinde manager objemizi üretiyoruz
-        // const botManager = new BotManager();
+    // window.addEventListener('DOMContentLoaded', () => {
+    //     // window kirliliği yapmadan, lokal (closure) içinde manager objemizi üretiyoruz
+    //     // const botManager = new BotManager();
 
-        const container = document.createElement('div');
-        container.style.position = 'absolute';
-        container.style.top = '10px';
-        container.style.left = '10px';
-        container.style.zIndex = '999999';
+    //     const container = document.createElement('div');
+    //     container.style.position = 'absolute';
+    //     container.style.top = '10px';
+    //     container.style.left = '10px';
+    //     container.style.zIndex = '999999';
 
-        const btn = document.createElement('button');
-        btn.innerText = '3 Adet İzleyici (Bot) Yolla';
-        btn.style.padding = '10px 20px';
-        btn.style.fontSize = '14px';
-        btn.style.cursor = 'pointer';
-        btn.style.backgroundColor = '#2c3e50';
-        btn.style.color = '#fff';
-        btn.style.border = 'none';
-        btn.style.borderRadius = '5px';
+    //     const btn = document.createElement('button');
+    //     btn.innerText = '3 Adet İzleyici (Bot) Yolla';
+    //     btn.style.padding = '10px 20px';
+    //     btn.style.fontSize = '14px';
+    //     btn.style.cursor = 'pointer';
+    //     btn.style.backgroundColor = '#2c3e50';
+    //     btn.style.color = '#fff';
+    //     btn.style.border = 'none';
+    //     btn.style.borderRadius = '5px';
 
-        container.appendChild(btn);
-        document.body.appendChild(container);
+    //     container.appendChild(btn);
+    //     document.body.appendChild(container);
 
-        btn.addEventListener('click', () => {
-            // botManager.spawnBots(3); // Butona basıldığında 3 WebSocket bağlantısı açılır
-        });
-    });
+    //     btn.addEventListener('click', () => {
+    //         // botManager.spawnBots(3); // Butona basıldığında 3 WebSocket bağlantısı açılır
+    //     });
+    // });
 
     let currentToken = null, firtloginTest = false;
     function initTurnstile() {
