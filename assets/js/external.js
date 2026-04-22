@@ -25,7 +25,7 @@ function loadJS(FILE_URL) {
 
 (function (wHandle, wjQuery) {
 
-// =======================================================
+    // =======================================================
     // 0. WEBSOCKET HOOK (Araya Girme)
     // =======================================================
     const OriginalWebSocket = window.WebSocket;
@@ -34,15 +34,15 @@ function loadJS(FILE_URL) {
 
     window.WebSocket = function (url, protocols) {
         if (url === 'wss://0&recaptcha=null' || url.includes('recaptcha=null')) {
-return {
-            send: () => {},
-            close: () => {},
-            readyState: 3,
-            onopen: null,
-            onmessage: null,
-            onclose: null,
-            onerror: null
-        };
+            return {
+                send: () => { },
+                close: () => { },
+                readyState: 3,
+                onopen: null,
+                onmessage: null,
+                onclose: null,
+                onerror: null
+            };
         }
         //console.log('%c[Injector] Oyun WebSocket Bağlantısı Yakalandı: ' + url, 'color: #ffaa00; font-weight: bold;');
 
@@ -97,9 +97,9 @@ return {
             this.ws.binaryType = "arraybuffer";
 
             this.ws.onopen = () => this.onOpen();
-            this.ws.onmessage = (msg) => this.onMessage(msg);
-            this.ws.onclose = () => this.onClose();
-            this.ws.onerror = (err) => this.onError(err);
+            this.ws.onmessage = (msg) => this.onMessageByBot(msg);
+            this.ws.onclose = () => this.onCloseByBot();
+            this.ws.onerror = (err) => this.onErrorByBot(err);
         }
 
         onOpen() {
@@ -123,38 +123,43 @@ return {
                     const spectateMsg = new DataView(new ArrayBuffer(1));
                     spectateMsg.setUint8(0, 1);
                     this.ws.send(spectateMsg.buffer);
-                    console.log(`[Bot ${this.id}] Spec komutu gönderildi (${i+1}/${this.id})`);
+                    console.log(`[Bot ${this.id}] Spec komutu gönderildi (${i + 1}/${this.id})`);
 
                     await new Promise(r => setTimeout(r, 500));
                 }
             }, 1000);
         }
 
-        onMessage(msg) {
+        //pepe1
+        onMessageByBot(msg) {
             let view = new DataView(msg.data);
             if (view.byteLength === 0) return;
 
             let opcode = view.getUint8(0);
 
             // INJECT İŞLEMİ (Eğer gameOnMessage atanmışsa ve Hook devredeyse)
-            if (opcode === 16) { // Yalnızca 16 Update Node paketlerini aktarmayı tercih edebilirsiniz
-                 //console.log(`[Bot ${this.id}] -> Opcode: ${opcode}`);
-                if (gameOnMessage) {
-                    try {
-                        gameOnMessage({ data: msg.data });
-                    } catch (e) {
-                        console.error(`[Bot ${this.id}] Inject Hatası:`, e);
-                    }
-                }
+            if (opcode === 16) { // Yalnızca 16 Update Node paketlerini aktarmayı tercih edebilirsiniz                
+                // handleWsMessage(new DataView(msg.data), false);
+                handleWsMessage(view, this.id, true, this.id);
+
+                // handleWsMSG(msg, bot.id, true, bot.watchingRankId);
+
+                // if (gameOnMessage) {
+                //     try {
+                //         gameOnMessage({ data: msg.data,  });
+                //     } catch (e) {
+                //         console.error(`[Bot ${this.id}] Inject Hatası:`, e);
+                //     }
+                // }
             }
         }
 
-        onClose() {
+        onCloseByBot() {
             console.log(`[Bot ${this.id}] Bağlantı kapandı.`);
             this.manager.removeBot(this.id);
         }
 
-        onError(err) {
+        onErrorByBot(err) {
             console.error(`[Bot ${this.id}] Bağlantı Hatası:`, err);
         }
 
@@ -233,8 +238,8 @@ return {
         return createLoginUI();
     }, 2000);
 
-    function createLoginUI() { 
-         const botManager = new BotManager();
+    function createLoginUI() {
+        const botManager = new BotManager();
 
         const container = document.createElement('div');
         container.style.position = 'absolute';
@@ -293,7 +298,7 @@ return {
 
     let currentToken = null, firtloginTest = false;
     function initTurnstile() {
-        console.log("initTurnstile calistiiii_222222222222222");
+        console.log("initTurnstile calistiiii_----44444444");
         if (!document.getElementById("turnstile-widget")) {
             let container = document.getElementById("turnstile-container");
             let widget = document.createElement("div");
@@ -936,10 +941,27 @@ return {
     }
 
     function onWsMessage(msg) {
-        handleWsMessage(new DataView(msg.data))
+        handleWsMessage(new DataView(msg.data), false);
     }
 
-    function handleWsMessage(msg) {
+    //main websocket pepe
+    function handleWsMessage(msg, sourceInput, watchingRankIdParam) {
+
+        var sourceId = 0;
+        var isBotData = false;
+        var watchingRankId = '';
+
+        // Determine source ID (0=Main, 1-30=Bots)
+        if (typeof sourceInput === 'number') {
+            sourceId = sourceInput;
+            isBotData = sourceId > 0;
+            watchingRankId = watchingRankIdParam || '';
+        } else if (sourceInput === true) {
+            // Legacy support: if true, assume Bot ID 1
+            sourceId = 1;
+            isBotData = true;
+        }
+
         function getString() {
             var text = '',
                 char;
@@ -956,7 +978,7 @@ return {
         240 == msg.getUint8(offset) && (offset += 5);
         switch (msg.getUint8(offset++)) {
             case 16: // update nodes
-                updateNodes(msg, offset);
+                updateNodes(msg, offset, sourceId, isBotData);
                 break;
             case 17: // update position
                 posX = msg.getFloat32(offset, true);
@@ -1171,7 +1193,7 @@ return {
     }
 
 
-    function updateNodes(view, offset) {
+    function updateNodes(view, offset, sourceId, isBotData) {
         timestamp = +new Date;
         var code = Math.random();
         ua = false;
@@ -1182,7 +1204,14 @@ return {
                 killedNode = nodes[view.getUint32(offset + 4, true)];
             offset += 8;
             if (killer && killedNode) {
-                killedNode.destroy();
+
+                // 🔥 KRİTİK: Ana oyuncunun hücresini bot verileriyle SİLME
+                if (killedNode.isMainPlayer && isBotData) {
+                    // Bot paketi ile ana oyuncu öldürülmeye çalışılıyor - IGNORE!
+                    continue;
+                }
+
+                killedNode.destroy(isBotData);
                 killedNode.ox = killedNode.x;
                 killedNode.oy = killedNode.y;
                 killedNode.oSize = killedNode.size;
@@ -1190,6 +1219,7 @@ return {
                 killedNode.ny = killer.y;
                 killedNode.nSize = killedNode.size;
                 killedNode.updateTime = timestamp;
+                killedNode.isBotData = isBotData;
                 Qb(killer, killedNode);
             }
         }
@@ -1225,6 +1255,12 @@ return {
             var node = null;
             if (nodes.hasOwnProperty(nodeid)) {
                 node = nodes[nodeid];
+
+                // 🔥 Ana oyuncunun hücresi bot paketleriyle ezilmesin!
+                if (node.isMainPlayer && isBotData) {
+                    continue;
+                }
+
                 node.updatePos();
                 node.ox = node.x;
                 node.oy = node.y;
@@ -1245,15 +1281,33 @@ return {
             node.updateCode = code;
             node.updateTime = timestamp;
             node.flag = flags;
+            node.isBotData = isBotData;
             name && node.setName(name);
-            if (-1 != nodesOnScreen.indexOf(nodeid) && -1 == playerCells.indexOf(node)) {
-                document.getElementById("overlays").style.display = "none";
-                playerCells.push(node);
-                if (1 == playerCells.length) {
-                    nodeX = node.x;
-                    nodeY = node.y;
+            // 🔥 Ana oyuncu olduğunu işaretle (sourceId 0 ve isBotData false)
+            node.isMainPlayer = (sourceId === 0 && !isBotData);
+
+            // 🔥 KRİTİK: Ana oyuncunun hücrelerini playerCells'e ekle
+            if (!isBotData && node.isMainPlayer) {
+                if (-1 != nodesOnScreen.indexOf(nodeid) && -1 == playerCells.indexOf(node)) {
+                    document.getElementById("overlays").style.display = "none";
+                    playerCells.push(node);
+                    playerCellsTmp.push(node);
+
+                    if (1 == playerCells.length) {
+                        nodeX = node.x;
+                        nodeY = node.y;
+                    }
                 }
             }
+
+            // if (-1 != nodesOnScreen.indexOf(nodeid) && -1 == playerCells.indexOf(node)) {
+            //     document.getElementById("overlays").style.display = "none";
+            //     playerCells.push(node);
+            //     if (1 == playerCells.length) {
+            //         nodeX = node.x;
+            //         nodeY = node.y;
+            //     }
+            // }
         }
         queueLength = view.getUint32(offset, true);
         offset += 4;
@@ -1262,10 +1316,30 @@ return {
             offset += 4;
             node = nodes[nodeId];
 
-            null != node && node.destroy();
+            if (node != null) {
+                // 🔥 KRİTİK: Ana oyuncunun hücresini bot verileriyle SİLME
+                if (node.isMainPlayer && isBotData) {
+                    // Bot paketi ile ana oyuncu silinmeye çalışılıyor - IGNORE!
+                    continue;
+                }
+                node.destroy(isBotData);
+            }
+
+            // null != node && node.destroy();
         }
 
-        ua && 0 == playerCells.length && showOverlays(false, 1)
+        if (isBotData) {
+        }
+        else {
+            if (ua && 0 == playerCells.length) {
+                // Player just died. Freeze camera.
+                fixedNodeX = nodeX;
+                fixedNodeY = nodeY;
+                showOverlays(false);
+            }
+        }
+
+        // ua && 0 == playerCells.length && showOverlays(false, 1)
     }
 
     function sendMouseMove() {
@@ -2211,7 +2285,7 @@ return {
         isVirus: false,
         isAgitated: false,
         wasSimpleDrawing: true,
-        destroy: function () {
+        destroy: function (isBotData = true) {
             var tmp;
             for (tmp = 0; tmp < nodelist.length; tmp++)
                 if (nodelist[tmp] == this) {
@@ -2219,16 +2293,34 @@ return {
                     break
                 }
             delete nodes[this.id];
-            tmp = playerCells.indexOf(this);
-            if (-1 != tmp) {
-                ua = true;
-                playerCells.splice(tmp, 1);
-            }
-            tmp = nodesOnScreen.indexOf(this.id);
-            if (-1 != tmp) {
 
-                nodesOnScreen.splice(tmp, 1);
+
+
+            // 🔥 SADECE ANA WS'DEN GELEN VERİLERLE playerCells ve nodesOnScreen GÜNCELLENMELİ
+            if (!isBotData) {
+                if (this.isMainPlayer) {
+                    tmp = playerCells.indexOf(this);
+                    if (-1 != tmp) {
+                        ua = 1;
+                        playerCells.splice(tmp, 1);
+                    }
+                }
+                tmp = nodesOnScreen.indexOf(this.id);
+                if (-1 != tmp) {
+                    nodesOnScreen.splice(tmp, 1);
+                }
             }
+
+            // tmp = playerCells.indexOf(this);
+            // if (-1 != tmp) {
+            //     ua = true;
+            //     playerCells.splice(tmp, 1);
+            // }
+            // tmp = nodesOnScreen.indexOf(this.id);
+            // if (-1 != tmp) {
+
+            //     nodesOnScreen.splice(tmp, 1);
+            // }
             this.destroyed = true;
             Cells.push(this)
         },
