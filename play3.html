@@ -20,8 +20,8 @@
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/vector.js"></script>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async="" defer=""></script>
-    <!-- <script src="assets/js/script_raw.js?v=96"></script> -->
-    <script src="assets/js/script3.js?v=96"></script>
+    <!-- <script src="assets/js/script_raw.js?v=97"></script> -->
+    <script src="assets/js/script3.js?v=97"></script>
 
 
 
@@ -93,13 +93,23 @@
 
                 </div>
 
+                <!-- Turnstile container'ı - Bu zorunlu -->
                 <div id="turnstile-container" style="margin-top:10px">
+                    <!-- turnstile-widget buraya dinamik olarak eklenecek -->
+                </div>
+
+                <!-- Token'i saklamak için hidden input (isteğe bağlı) -->
+                <input type="hidden" id="cf-turnstile-response" name="cf-turnstile-response">
+
+
+
+                <!-- <div id="turnstile-container" style="margin-top:10px">
                     <div id="turnstile-widget">
                         <div><input type="hidden" name="cf-turnstile-response" id="cf-chl-widget-72w0a_response"
                                 value="1.NVumehEnSuMfwAHYKgTwwj9CJLUUcLO8xnZLfm7sKhUqOAISYQL_4dUfW02nqb3d57DuzJ6j8GkiLWRQxPtc1yEw_2G6jPlg14sVIdtxuW37W8kupyb_8Q34Wmb6_X4HdibOn6yYpEtDmHfzW4bbxh9m9gq6zcUwJVYNdlRq_jsNzCDIjUDonte_WjcL2l1jsJ713wJVzawnMij0X7F0BT0xv6FTivr0bGC32n1jMHSf3jGj_6WCxNlNzcvPlMgp86yRYDVU1dV3k8H0JGjp2fmdlYx7-HMpJgoTUHNtr5aqzFCIVMs2q2RlCifyHH9Q1pE3i5DlzaToC2by9_KUBAr4ZpbCwkcVR884l9HEmtqGObXkcmlvg0B6-45NMgsnNKQqU8dqlufpXOv2x7KcOs300og2bjm0V0dBGENfVH9WUKuuLv6_zZhfPI4M6nI4N7k57hQsBigwCx4kKMNcOho37lXT5uPhjdeFMR3UNxsT31iRmjYGR48V5udp36VuDzb5o5H3BAKXT0QLKKDHOKMh8DeLvJ3bGVVfU_-KL1VmLAxYYaHIX6Q-ZIH7fLiYi5k8s9KgMfvqyYbVpgXCmgNSV1YPy9hjEuqwS5xlnEY3YdGqFCH_rQC537Fsi57LCHE6cbpXRU0KtCTCwsmC3Q.MnlZhidkPBsrcRQ9fFhsHw.64b4e8328c768f38ff37451698892ba477e80bd74e8e0703e62f9bcaeaa14864">
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <div id="leftOptions">
                     <div style="margin: 6px;">
