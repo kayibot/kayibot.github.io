@@ -34,7 +34,7 @@ function loadJS(FILE_URL) {
 
     setTimeout(() => {
         return createLoginUI();
-    }, 1700);
+    }, 4000);
     function createLoginUI() {
 
 
