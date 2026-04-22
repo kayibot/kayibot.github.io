@@ -22,7 +22,7 @@ function loadJS(FILE_URL) {
 }
 
 
-//#111111111 
+//#2222222222 
 
 (function (wHandle, wjQuery) {
 
@@ -1292,7 +1292,6 @@ function loadJS(FILE_URL) {
                 if (-1 != nodesOnScreen.indexOf(nodeid) && -1 == playerCells.indexOf(node)) {
                     document.getElementById("overlays").style.display = "none";
                     playerCells.push(node);
-                    playerCellsTmp.push(node);
 
                     if (1 == playerCells.length) {
                         nodeX = node.x;
