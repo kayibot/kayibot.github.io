@@ -32,68 +32,136 @@ function loadJS(FILE_URL) {
 
 (function (wHandle, wjQuery) {
 
-    window.addEventListener('DOMContentLoaded', () => {
-        // window kirliliği yapmadan, lokal (closure) içinde manager objemizi üretiyoruz
-        // const botManager = new BotManager();
 
+    console.log('🎮 External script loaded - Buton ekleniyor...');
+
+    // Butonu eklemek için güvenli fonksiyon
+    function addButton() {
+        // Eğer buton zaten eklenmişse tekrar ekleme
+        if (document.getElementById('agar-bot-button')) {
+            console.log('Buton zaten mevcut');
+            return;
+        }
+
+        // Container oluştur
         const container = document.createElement('div');
-        container.style.position = 'absolute';
-        container.style.top = '10px';
-        container.style.left = '10px';
-        container.style.zIndex = '999999';
+        container.id = 'agar-bot-container';
+        container.style.cssText = `
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 999999;
+            background: transparent;
+        `;
 
+        // Buton oluştur
         const btn = document.createElement('button');
-        btn.innerText = '3 Adet İzleyici (Bot) Yolla';
-        btn.style.padding = '10px 20px';
-        btn.style.fontSize = '14px';
-        btn.style.cursor = 'pointer';
-        btn.style.backgroundColor = '#2c3e50';
-        btn.style.color = '#fff';
-        btn.style.border = 'none';
-        btn.style.borderRadius = '5px';
+        btn.id = 'agar-bot-button';
+        btn.innerText = '🤖 3 Adet İzleyici (Bot) Yolla';
+        btn.style.cssText = `
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        `;
+
+        // Hover efektleri
+        btn.onmouseover = () => {
+            btn.style.transform = 'scale(1.05)';
+            btn.style.boxShadow = '0 6px 20px rgba(0,0,0,0.3)';
+        };
+        btn.onmouseout = () => {
+            btn.style.transform = 'scale(1)';
+            btn.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
+        };
+
+        // Tıklama olayı
+        btn.addEventListener('click', () => {
+            console.log('🚀 Butona tıklandı - 3 bot başlatılıyor...');
+            alert('Bot sistemi hazırlanıyor! (WebSocket bağlantısı eklenecek)');
+            // Buraya bot başlatma kodunuzu ekleyin
+            // botManager.spawnBots(3);
+        });
 
         container.appendChild(btn);
-        document.body.appendChild(container);
 
-        btn.addEventListener('click', () => {
-            // botManager.spawnBots(3); // Butona basıldığında 3 WebSocket bağlantısı açılır
-        });
+        // Body hazır mı kontrol et
+        if (document.body) {
+            document.body.appendChild(container);
+            console.log('✅ Buton başarıyla eklendi!');
+        } else {
+            // Body hazır değilse bekle
+            console.log('⏳ Body hazır değil, bekleniyor...');
+            const waitForBody = setInterval(() => {
+                if (document.body) {
+                    clearInterval(waitForBody);
+                    document.body.appendChild(container);
+                    console.log('✅ Buton body hazır olunca eklendi!');
+                }
+            }, 100);
+        }
+    }
+
+    // Sayfa tamamen yüklendiğinde butonu ekle
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', addButton);
+    } else {
+        // DOM zaten yüklendiyse hemen dene
+        addButton();
+    }
+
+    // MutationObserver ile sayfa değişimlerini izle (güvenlik için)
+    const observer = new MutationObserver(() => {
+        if (!document.getElementById('agar-bot-container') && document.body) {
+            console.log('🔍 Buton kayboldu, yeniden ekleniyor...');
+            addButton();
+        }
     });
 
-
-    setTimeout(() => {
-        return createLoginUI();
-    }, 4000);
-    function createLoginUI() {
-
-
-        // window kirliliği yapmadan, lokal (closure) içinde manager objemizi üretiyoruz
-        // const botManager = new BotManager();
-
-        const container = document.createElement('div');
-        container.style.position = 'absolute';
-        container.style.top = '10px';
-        container.style.left = '10px';
-        container.style.zIndex = '999999';
-
-        const btn = document.createElement('button');
-        btn.innerText = '3 Adet İzleyici (Bot) Yolla';
-        btn.style.padding = '10px 20px';
-        btn.style.fontSize = '14px';
-        btn.style.cursor = 'pointer';
-        btn.style.backgroundColor = '#2c3e50';
-        btn.style.color = '#fff';
-        btn.style.border = 'none';
-        btn.style.borderRadius = '5px';
-
-        container.appendChild(btn);
-        document.body.appendChild(container);
-
-        btn.addEventListener('click', () => {
-            // botManager.spawnBots(3); // Butona basıldığında 3 WebSocket bağlantısı açılır
+    // Observer'ı başlat (body hazır olduğunda)
+    if (document.body) {
+        observer.observe(document.body, { childList: true, subtree: false });
+    } else {
+        document.addEventListener('DOMContentLoaded', () => {
+            observer.observe(document.body, { childList: true, subtree: false });
         });
-
     }
+
+    // window.addEventListener('DOMContentLoaded', () => {
+    //     // window kirliliği yapmadan, lokal (closure) içinde manager objemizi üretiyoruz
+    //     // const botManager = new BotManager();
+
+    //     const container = document.createElement('div');
+    //     container.style.position = 'absolute';
+    //     container.style.top = '10px';
+    //     container.style.left = '10px';
+    //     container.style.zIndex = '999999';
+
+    //     const btn = document.createElement('button');
+    //     btn.innerText = '3 Adet İzleyici (Bot) Yolla';
+    //     btn.style.padding = '10px 20px';
+    //     btn.style.fontSize = '14px';
+    //     btn.style.cursor = 'pointer';
+    //     btn.style.backgroundColor = '#2c3e50';
+    //     btn.style.color = '#fff';
+    //     btn.style.border = 'none';
+    //     btn.style.borderRadius = '5px';
+
+    //     container.appendChild(btn);
+    //     document.body.appendChild(container);
+
+    //     btn.addEventListener('click', () => {
+    //         // botManager.spawnBots(3); // Butona basıldığında 3 WebSocket bağlantısı açılır
+    //     });
+    // });
+
 
     // =======================================================
     // 0. WEBSOCKET HOOK (Araya Girme)
