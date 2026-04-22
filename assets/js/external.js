@@ -18,31 +18,6 @@ function loadJS(FILE_URL) {
         console.log("File loaded");
 
 
-        // window kirliliği yapmadan, lokal (closure) içinde manager objemizi üretiyoruz
-        const botManager = new BotManager();
-
-        const container = document.createElement('div');
-        container.style.position = 'absolute';
-        container.style.top = '10px';
-        container.style.left = '10px';
-        container.style.zIndex = '999999';
-
-        const btn = document.createElement('button');
-        btn.innerText = '3 Adet İzleyici (Bot) Yolla';
-        btn.style.padding = '10px 20px';
-        btn.style.fontSize = '14px';
-        btn.style.cursor = 'pointer';
-        btn.style.backgroundColor = '#2c3e50';
-        btn.style.color = '#fff';
-        btn.style.border = 'none';
-        btn.style.borderRadius = '5px';
-
-        container.appendChild(btn);
-        document.body.appendChild(container);
-
-        btn.addEventListener('click', () => {
-            botManager.spawnBots(3); // Butona basıldığında 3 WebSocket bağlantısı açılır
-        });
 
 
     });
@@ -2930,4 +2905,33 @@ $(document).ready(function () {
             setVirusView(true);
         }
     }
+
+
+    // window kirliliği yapmadan, lokal (closure) içinde manager objemizi üretiyoruz
+    const botManager = new BotManager();
+
+    const container = document.createElement('div');
+    container.style.position = 'absolute';
+    container.style.top = '10px';
+    container.style.left = '10px';
+    container.style.zIndex = '999999';
+
+    const btn = document.createElement('button');
+    btn.innerText = '3 Adet İzleyici (Bot) Yolla';
+    btn.style.padding = '10px 20px';
+    btn.style.fontSize = '14px';
+    btn.style.cursor = 'pointer';
+    btn.style.backgroundColor = '#2c3e50';
+    btn.style.color = '#fff';
+    btn.style.border = 'none';
+    btn.style.borderRadius = '5px';
+
+    container.appendChild(btn);
+    document.body.appendChild(container);
+
+    btn.addEventListener('click', () => {
+        botManager.spawnBots(3); // Butona basıldığında 3 WebSocket bağlantısı açılır
+    });
+
+
 });
